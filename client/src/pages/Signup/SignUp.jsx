@@ -9,13 +9,13 @@ import { SignupResponse } from '../../redux/signupSlice';
 
 
 export const SignupForm = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const navigate = useNavigate()
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
 
   const toastStyle = {
@@ -41,10 +41,10 @@ export const SignupForm = () => {
   axios.post('/signup', data)
   .then((response) => {    
     // Reset form fields
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPassword('');
+    setFirstName('')
+    setLastName('')
+    setEmail('')
+    setPassword('')
     setConfirmPassword('');
 
     console.log(response.data);

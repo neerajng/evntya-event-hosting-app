@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,7 +7,6 @@ import toast, { Toaster } from 'react-hot-toast';
 export const ResetPasswordForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { id: token } = useParams();
   const navigate = useNavigate()
   
@@ -75,7 +74,6 @@ export const ResetPasswordForm = () => {
             fullWidth
             sx={{ borderRadius: '20px' }}
             onClick={handleSubmit}
-            disabled={isButtonDisabled}
           >
             Submit
           </Button>

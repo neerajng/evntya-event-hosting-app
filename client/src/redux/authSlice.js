@@ -2,23 +2,28 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState ={
-    authState: JSON.parse(localStorage.getItem('token')) ? JSON.parse(localStorage.getItem('token')):null
+    authState: {
+      token: JSON.parse(localStorage.getItem('token')) ? JSON.parse(localStorage.getItem('token')):null,
+      role: JSON.parse(localStorage.getItem('role')) ? JSON.parse(localStorage.getItem('role')):null, 
+  }
 };
-
   
 const authSlice = createSlice({
     name:'auth',
     initialState,
     reducers: {
         setAuth: (state) => {
-          state.authState = JSON.parse(localStorage.getItem('token')) ? JSON.parse(localStorage.getItem('token')):null
+          state.authState.token = JSON.parse(localStorage.getItem('token')) ? JSON.parse(localStorage.getItem('token')):null
+          state.authState.role = JSON.parse(localStorage.getItem('role')) ? JSON.parse(localStorage.getItem('role')): null;
         },
         clearAuth: (state) => {
-          state.authState = null;
+          state.authState.token = null;
+          state.authState.role = null;
         },
     },
 })
 console.log(JSON.parse(localStorage.getItem('token'))+'slice')
+
 // this is for dispatch
 export const { setAuth, clearAuth } = authSlice.actions;
 

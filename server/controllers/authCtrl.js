@@ -1,15 +1,17 @@
 const User = require('../models/User');
+const Event = require('../models/Event');
 const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generate')
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config()
 
 
 const signupCtrl =  async (req, res) => {
     try {
-      // Extract the user data from the request body
+      
       const { firstName, lastName, email, password } = req.body;
 
       // Check for empty fields
@@ -24,7 +26,7 @@ const signupCtrl =  async (req, res) => {
       }
       
       //Find user is existing
-      let existingUser = await User.findOne({
+      const existingUser = await User.findOne({
         $or: [{ email }, { firstName, lastName }],
       });
 
@@ -149,7 +151,6 @@ const signinCtrl = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check for empty fields
     if (!email || !password) {
       return res.status(400).json({ success: false, error: 'Please fill in all fields' });
       }
@@ -159,12 +160,27 @@ const signinCtrl = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+    // Check if the user is blocked
+    if (user.isBlocked) {
+      return res.status(403).json({ error: 'You have been blocked' });
+    }
 
+    const userPwd = user.password
+    console.log(userPwd)
+    if(!userPwd){
+      return res.status(401).json({ error: 'You must sign in with Google' });
+    }
     // Compare the provided password with the stored hashed password
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid password' });
     }
+
+     // Store the user's ID in the session
+     req.session.userId = user._id;
+    //  req.session.role = email === adminEmail ? 'admin' : 'user';
+
+     console.log(req.session)
 
     // Generate JWT token for authentication
     const token = jwt.sign(
@@ -256,18 +272,88 @@ catch (error) {
 }
 };
 
-const getUserProfile = async (req, res) => {
+const googleSigninCtrl = async (req, res) => {
   try {
-    const userProfile = await User.findById(req.user.id).select('-password');
-    res.json(userProfile);
+    console.log("1000")
+    res.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
+    const { client_id, jwtToken } = req.body;
+
+    // Verify the ID token and extract user data from the payload
+    const payload = await verifyGoogle(client_id, jwtToken);
+    const email = payload['email'];
+    const name = payload['name'];
+    const picture = payload['picture'];
+    const given_name = payload['given_name'];
+    const family_name = payload['family_name'];
+    // ...
+    console.log(email,picture,given_name, family_name)
+
+    // Check if the user with the provided email exists
+    let user = await User.findOne({ email });
+    if (!user) {
+      // Create a new user record if it doesn't exist
+      user = new User({
+        firstName: given_name,
+        lastName: family_name,
+        email: email,
+        picture: picture,
+        isVerified: true
+      });
+      await user.save();
+    } else {
+      // Check if the user is blocked
+      console.log(user.isBlocked)
+      if (user.isBlocked) {
+        return res.status(403).json({ error: 'You have been blocked' });
+      }
+      // Update the existing user record with the new data
+      user.firstName = given_name;
+      user.lastName = family_name;
+      user.picture = picture;
+      user.isVerified = true;
+      await user.save();
+    }
+
+    // Store the user's ID in the session
+    req.session.userId = user._id;
+
+    // Generate JWT token for authentication
+    const token = jwt.sign(
+      { userId: user._id }, 
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "2h"
+      }
+    );
+
+    // Return the token to the client
+    res.json({ token, email });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    console.error('Google sign-in error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
+const verifyGoogle = async (client_id, jwtToken) => {
+  try{
+    const client = new OAuth2Client(client_id);
+    // Call the verifyIdToken to
+    // verify and decode it
+    const ticket = await client.verifyIdToken({
+        idToken: jwtToken,
+        audience: client_id,
+    });
+    // Get the JSON with all the user info
+    const payload = ticket.getPayload();
+    // This is a JSON object that contains
+    // all the user info
+    return payload;
+  } catch(error){
+    console.error(error);
+    return res.status(500).json({ success: false, error: error.message });
+  }  
+};
 
- 
 
   module.exports = {
     signupCtrl,
@@ -275,6 +361,6 @@ const getUserProfile = async (req, res) => {
     signinCtrl,
     forgetCtrl,
     resetCtrl,
-
-    getUserProfile    
+    verifyGoogle,
+    googleSigninCtrl 
   };

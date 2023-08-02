@@ -8,16 +8,20 @@ import {theme} from './assets/themes/theme'
 import { Provider } from 'react-redux'; // Import the Provider component
 import store  from './redux/store'; // Import your Redux store
 import { CssBaseline } from '@mui/material';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
+  <GoogleOAuthProvider clientId= {process.env.REACT_APP_CLIENT_ID}>
     <ThemeProvider theme={theme}> 
-    <CssBaseline/>
-    <Provider store={store}>
-    <App />
-    </Provider>
+      <CssBaseline/>
+      <Provider store={store}>
+          <App />
+      </Provider>
     </ThemeProvider>
+  </GoogleOAuthProvider>
   </>
 );
 

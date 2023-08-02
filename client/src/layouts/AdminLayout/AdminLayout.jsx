@@ -16,49 +16,47 @@ import AddIcon from '@mui/icons-material/Add';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Evntya from '../../components/Evntya/Evntya';
 
-export const NavbarLayout = () => {
+export const AdminLayout = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
   return (
     <>
-    <AppBar position="static" component="nav" sx={{ pb: 2,bgcolor: 'brandYellow.main', color: 'black' }}>
+    <AppBar position="static" component="nav" sx={{ pb: 2,bgcolor: 'primary.main', color: 'black' }}>
       <Toolbar>
         <Typography variant="h8" component="div" sx={{ flexGrow: 1 }}>
-          <Evntya component={Link}
-              to="/test"/>
+          <Evntya />
         </Typography>
 
         <Hidden smDown>
           <Box>
             <Button
               component={Link}
-              to="/test/create-event"
-              endIcon={<AddIcon/>}
-              sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
+              to="/admin/users"
+              sx={{ textTransform: 'none', color: 'white', fontSize: '1rem' }}
             >
-              Create an Event
+              Manage Users
             </Button>
             {' '}
             <Button
               component={Link}
-              to="/test/my-events"
-              sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
+              to="/admin/events"
+              sx={{ textTransform: 'none', color: 'white', fontSize: '1rem' }}
             >
-              My Events
+              Manage Events
             </Button>
             {' '}
             <Button
               component={Link}
-              to="/test/profile"
+              to="/admin/profile"
               endIcon={<AccountCircle fontSize="large"/>}
-              sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
+              sx={{ textTransform: 'none', color: 'white', fontSize: '1rem' }}
             >
               Profile
             </Button>

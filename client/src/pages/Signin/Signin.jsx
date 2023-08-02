@@ -6,10 +6,14 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useSelector, useDispatch } from 'react-redux';
 import { OtpResponse } from '../../redux/otpSlice';
 import { setAuth } from '../../redux/authSlice';
+import { GoogleSignin } from '../../components/GoogleSignin/GoogleSignin';
+import '../../utils/axiosConfig';
+import { Spinner } from '../../components/Spinner/Spinner';
 
 export const SigninForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');  
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate()  
   const otpResponse = useSelector((state) => state.otps.response);
   const dispatch = useDispatch();  
@@ -24,31 +28,33 @@ export const SigninForm = () => {
 
   const handleSignin = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     // Process the sign-in logic
     console.log('Email:', email);
     console.log('Password:', password);
-
     const data = {
       email,
       password
     };
-
-    // Send sign-in request to the backend
+        
     axios
       .post('/signin', data)
       .then((response) => {
-        // Retrieve the JWT token from the response
-        const { token } = response.data;
         
-        // Store the token in local storage or state for future use
+        const { token } = response.data;        
+        
+        // Determine the user's role based on their email
+        const role = email === process.env.REACT_APP_ADMIN ? 'admin' : 'user';
         localStorage.setItem('token', JSON.stringify(token));
-
+        localStorage.setItem('role', JSON.stringify(role));
+        
         // Update the auth state
         dispatch(setAuth());
 
-        // Navigate to the desired page after successful sign-in
-        navigate('/test')
+        setTimeout(() => {
+          setLoading(false);
+          email === process.env.REACT_APP_ADMIN ? navigate('/admin') : navigate('/test')
+        }, 5000);
         
       })
       .catch((error) => {
@@ -62,7 +68,7 @@ export const SigninForm = () => {
     setPassword('');
   };
 
-  return (
+  return (    
     <Box 
     sx={{
         position: 'absolute',
@@ -72,7 +78,8 @@ export const SigninForm = () => {
         height: '25%'
         }}
     >
-      <Grid container spacing={2}>
+      {loading && <Spinner />}
+      <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12}>
           <TextField
             label="Email"
@@ -103,7 +110,11 @@ export const SigninForm = () => {
           Sign In
           </Button>
         </Grid>
-        
+
+        <Grid align="center" py={2} ps={2}>
+          <GoogleSignin />
+        </Grid>
+
         <Grid item xs={12}>
           <Typography variant="body2" align="center">
             New User? <Button component={Link} to = "/test/signup">Sign Up</Button>

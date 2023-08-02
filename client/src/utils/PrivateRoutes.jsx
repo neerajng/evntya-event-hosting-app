@@ -2,15 +2,23 @@ import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-export const PrivateRoutes = () => {
+export const PrivateRoutes = ({ allowedRole }) => {
     
-    const authState = useSelector((state)=>{
+    const authState = useSelector((state)=>{ return  state.auths.authState })
 
-        return  state.auths.authState
-    })
+    console.log("Protected",authState)  
 
-    console.log("protected",authState,'kulu')  
+  if (!authState || !authState.token) {
+    
+    return <Navigate to="/test/signin" />;
 
-  return (authState ? <Outlet/> :<Navigate to='/test/signin'/>)
+  } else if (authState.role === allowedRole) {
+    
+    return <Outlet/>;
+
+  } else {
+    
+    return <Navigate to="/error" />;
+  }
 }
 

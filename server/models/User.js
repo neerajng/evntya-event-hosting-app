@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   password: String,
+  picture: String,
   mailOtp: {
     type: String,
     default: ''
@@ -15,7 +16,11 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   resetPasswordToken: String,
-  resetPasswordExpires: Date
+  resetPasswordExpires: Date,
+  isBlocked: {
+    type: Boolean,
+    default: false
+  },
 });
 
 const User = mongoose.model('User', userSchema);

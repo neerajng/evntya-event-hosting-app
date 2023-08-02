@@ -1,26 +1,27 @@
 import React from 'react';
 import LogoutIcon from '@mui/icons-material/Logout';
-import './SignOut.css';
 import {  useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { clearAuth } from '../../redux/authSlice';
+import { Box } from '@mui/material';
 
-const SignOut = () => {
+export const SignOut = () => {
 
   const navigate = useNavigate()
+  const dispatch = useDispatch();  
 
   const handleSignOut = (e) => {
     e.preventDefault();
     localStorage.removeItem('token');
-    navigate('/signup')
-    window.location.reload()
-    navigate('/signin')
-    window.location.reload()
+    localStorage.removeItem('role');
+    dispatch(clearAuth());
+    navigate('/test/signin') 
   };
 
   return (
-    <div className="signout" >
+    <Box className="signout" >
       <LogoutIcon type="submit" onClick={handleSignOut} style={{ display: '', marginLeft: '-32px',fontSize: '200%', cursor: 'pointer' }} />
-    </div>
+    </Box>
   );
 };
 
-export default SignOut;

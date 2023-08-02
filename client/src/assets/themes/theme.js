@@ -5,6 +5,7 @@ export const theme = createTheme({
   palette: {
     brandYellow: {
       main: '#FFF000',
+      
     },
   },
   typography: {

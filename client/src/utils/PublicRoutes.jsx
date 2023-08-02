@@ -4,13 +4,16 @@ import { useSelector } from 'react-redux'
 
 export const PublicRoutes = () => {
 
-    const authState = useSelector((state)=>{
-
-      return  state.auths.authState
-    })
+    const authState = useSelector((state)=>{ return  state.auths.authState })
     
-    console.log("public",authState ,'manali')
+    console.log("Public",authState)
 
-  return (authState===undefined ||authState === null ? <Outlet/> :<Navigate to='/test'/>)//
+  if (!authState || !authState.token) {
+    return <Outlet />;
+  } else if (authState.role === 'admin') {
+    return <Navigate to="/admin" />;
+  } else {
+    return <Navigate to="/test" />;
+  }
 }
 
