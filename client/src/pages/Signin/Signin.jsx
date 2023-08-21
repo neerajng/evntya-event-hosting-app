@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Grid, Typography, Box } from '@mui/material';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import { Link, useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import { useSelector, useDispatch } from 'react-redux';
 import { OtpResponse } from '../../redux/otpSlice';
 import { setAuth } from '../../redux/authSlice';
 import { GoogleSignin } from '../../components/GoogleSignin/GoogleSignin';
-import '../../utils/axiosConfig';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { setSearchResults, setLocation } from '../../redux/eventsSlice';
 
 export const SigninForm = () => {
   const [email, setEmail] = useState('');
@@ -28,6 +28,7 @@ export const SigninForm = () => {
 
   const handleSignin = (e) => {
     e.preventDefault();
+    
     setLoading(true);
     // Process the sign-in logic
     console.log('Email:', email);
@@ -37,7 +38,7 @@ export const SigninForm = () => {
       password
     };
         
-    axios
+    axiosInstance
       .post('/signin', data)
       .then((response) => {
         
@@ -51,10 +52,72 @@ export const SigninForm = () => {
         // Update the auth state
         dispatch(setAuth());
 
+        
+          
+
         setTimeout(() => {
           setLoading(false);
           email === process.env.REACT_APP_ADMIN ? navigate('/admin') : navigate('/test')
         }, 5000);
+
+        function fetchEvents() {
+          axiosInstance
+            .get('/all-events')
+            .then((response) => {
+              const data = response.data;          
+              dispatch(setSearchResults(data))
+              console.log(data)
+            })
+            .catch((error) => console.log(error));
+        }                
+        
+         // Fetch location using geolocation API
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            let { latitude, longitude } = position.coords;
+    
+            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+      
+            const response = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+            );
+            const data = await response.json();
+            const { city } = data;
+
+            // Fetch events based on the city
+            axiosInstance
+              .get('/search-events', {
+                params: {
+                  location: city,
+                  category: 'All Events',
+                },
+              })
+              .then((response) => {
+                const data = response.data;
+                if (data.length === 0) {
+                  toast.error('No events happening in this city');
+                } else {
+                  dispatch(setSearchResults(data));
+                  dispatch(setLocation(city));
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+                toast.error(error.message);
+              });
+          },
+          (error) => {
+            console.log(error);
+            // If geolocation is denied or fails, fetch all events
+            fetchEvents();
+          }
+        );
+      } else {
+        // If geolocation API is not available, fetch all events
+        fetchEvents();
+      }              
+                  
         
       })
       .catch((error) => {

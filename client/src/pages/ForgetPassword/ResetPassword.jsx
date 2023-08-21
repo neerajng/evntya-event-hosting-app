@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import toast, { Toaster } from 'react-hot-toast';
 
 export const ResetPasswordForm = () => {
@@ -20,7 +20,7 @@ export const ResetPasswordForm = () => {
       return toast.error('Passwords should be matched')
     }
     // handle reset password request here
-    axios.post('/reset-password', { password, token })
+    axiosInstance.post('/reset-password', { password, token })
       .then((response) => {
         // handle successful response
         toast.success(response.data.message)

@@ -1,17 +1,32 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const style = {
   fontWeight: 'normal',
   fontFamily: 'brandFont',
-  fontSize: '220%'
+  width: "fit-content",
+  fontSize: '220%',
+  textTransform: 'none',
+  color: 'black',
+  ':hover': {
+    boxShadow: 'none',
+    backgroundColor: 'none',
+  },
+  ':active': {
+    boxShadow: 'none',
+    backgroundColor: 'transparent',
+  },
 };
 
 const Eventya = () => {
   return (
-    <Typography sx={style}>
-    EVNTYA
-    </Typography>  
+    <Button
+    component={Link}
+    to="/test"
+    sx={style}>
+    EVNTYA     
+    </Button>
   );
 };
 

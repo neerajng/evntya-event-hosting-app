@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const addressSchema = new mongoose.Schema({
-    location: String,
-    city: String,
-    state: String,
-    country: String
-  });
+    location: { type: String, trim: true },
+    city: { type: String, trim: true },
+    state: { type: String, trim: true },
+    country: { type: String, trim: true }
+});
 
 const Address = mongoose.model('Address', addressSchema);
 

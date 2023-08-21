@@ -5,23 +5,31 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@mui/material/styles';
 import {theme} from './assets/themes/theme'
-import { Provider } from 'react-redux'; // Import the Provider component
-import store  from './redux/store'; // Import your Redux store
+
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './redux/store';
+
 import { CssBaseline } from '@mui/material';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { ReactErrorBoundary } from './utils/errorBoundary/ReactErrorBoundary';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
+<ReactErrorBoundary>
   <GoogleOAuthProvider clientId= {process.env.REACT_APP_CLIENT_ID}>
     <ThemeProvider theme={theme}> 
       <CssBaseline/>
       <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
           <App />
+        </PersistGate>
       </Provider>
     </ThemeProvider>
   </GoogleOAuthProvider>
+  </ReactErrorBoundary>
   </>
 );
 

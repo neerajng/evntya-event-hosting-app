@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Stack } from '@mui/material';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs from 'dayjs';
 
-export const UpdateEvent = () => {
+export const UpdateEvent = ({event}) => {
   const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [tickets, setTickets] = useState([]);
-  const navigate = useNavigate()
+  const [imageUrl, setImageUrl] = useState(event ? event.image : null);
+  const [tickets, setTickets] = useState(event ? event.tickets : []);
+  const [publishTime, setPublishTime] = useState(event ? dayjs(event.publishTime) : null);
+
+  const navigate = useNavigate();
 
 const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -29,34 +35,52 @@ const handleImageChange = (e) => {
     e.preventDefault();
   
     let imageUrl;
+    console.log(image,"loko")
   
     // Upload image
     if (image) {
       const formData = new FormData();
       formData.append('image', image);
-  
-      axios
+      axiosInstance
         .post('/upload-image', formData)
         .then((response) => {
           imageUrl = response.data.imageUrl;
           // Submit event data with image URL and ticket information
-          const data = { eventId: JSON.parse(localStorage.getItem('eventId')), image: imageUrl, tickets };
+          const data = event
+          ? { eventId: event._id, image: imageUrl, tickets, publishTime: publishTime.toISOString() }
+          : { eventId: JSON.parse(localStorage.getItem('eventId')), image: imageUrl, tickets, publishTime: publishTime.toISOString() };;
           console.log(imageUrl);  
-          console.log(data+"lo");  
-          axios
+
+          if (event) {
+            axiosInstance
+              .put(`/edit-event-two/${event._id}`, data)
+              .then((response) => {
+                toast.success(response.data.message);
+                setTimeout(() => {             
+                  navigate('/test/my-events', { replace: true });
+                }, 2000);
+              })
+              .catch((error) => {
+                toast.error(error.response.data.error);
+              });
+          } else {
+          axiosInstance
             .post('/update-event', data)
-            .then((response)=>{
+            .then((response)=>{    
               toast.success(response.data.message)
               setTimeout(() => {
                 localStorage.removeItem('eventId');
                 // Code to execute after delay
                 navigate('/test', {replace:true})
+                console.log(publishTime.toISOString())
+                console.log(response)
               }, 2000);
             })
             .catch((error)=> {
               // Handle error response
               toast.error(error.response.data.error);
             });
+          }  
         })
         .catch((error) => {
           console.log(error)
@@ -68,7 +92,7 @@ const handleImageChange = (e) => {
   return (
     <Box sx={{ bgcolor: '', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
       <Box backgroundColor="" sx={{ width: '50%' }} mt={5}>
-        <Typography variant="h3">Publish Your Event</Typography>
+      <Typography variant="h3">{event ? 'Edit Your Event' : 'Publish Your Event'}</Typography>
         <Typography variant="h6" my={1}>
           Step 2
         </Typography>
@@ -90,6 +114,7 @@ const handleImageChange = (e) => {
                 variant="outlined"
                 name="name"
                 fullWidth
+                value={ticket.name}
                 onChange={(e) => handleTicketChange(index, 'name', e.target.value)}
                 required
               />
@@ -98,6 +123,7 @@ const handleImageChange = (e) => {
                 variant="outlined"
                 name="price"
                 fullWidth
+                value={ticket.price}
                 onChange={(e) => handleTicketChange(index, 'price', e.target.value)}
                 required
               />
@@ -106,15 +132,28 @@ const handleImageChange = (e) => {
                 variant="outlined"
                 name="quantity"
                 fullWidth
+                value={ticket.quantity}
                 onChange={(e) => handleTicketChange(index, 'quantity', e.target.value)}
                 required
               />
             </Stack>
           ))}
-          <Button onClick={handleAddTicket}>Add Ticket</Button>
+          <Button variant="outlined" onClick={handleAddTicket}>Add Ticket</Button>
+
+          <Typography variant="h5" my={1}>
+          Schedule Publishing Time 
+          </Typography>  
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateTimePicker
+            label="Publish Time"
+            value={publishTime}
+            onChange={setPublishTime}
+          />
+          </LocalizationProvider>
+
 
           <Button sx={{ bgcolor: 'green' }} type="submit" variant="contained" onClick={handleSubmit}>
-            Publish Event
+            {event ? 'Update and Publish Event ' : 'Publish Event'}
           </Button>
         </Stack>
       </Box>

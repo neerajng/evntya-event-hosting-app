@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig';
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { SignOut } from '../../components/SignOut/SignOut'; 
 import toast, { Toaster } from 'react-hot-toast';
@@ -14,7 +14,7 @@ export const AdminProfile = () => {
   };
   
   useEffect(() => {    
-      axios
+      axiosInstance
         .get('/admin-profile')
         .then((response) => {
           setUser(response.data);
@@ -36,7 +36,7 @@ export const AdminProfile = () => {
       <Grid item xs={12} sm={6}>
   <Card sx={{ borderRadius: 5}} >
   <CardHeader
-  avatar={<Avatar sx={{ width: 100, height: 100 }} alt={user.name} src="{user.picture}" referrerpolicy="no-referrer"/>}
+  avatar={<Avatar sx={{ width: 100, height: 100 }} alt={user.name} src="{user.picture}" />}
   title={<Typography variant="h4">{user.firstName} {user.lastName}</Typography>}
   subheader={
     <Box>
@@ -46,7 +46,7 @@ export const AdminProfile = () => {
   }
 />
     <CardActions sx={{ justifyContent: 'center' }}>
-      <Button variant="contained">Follow</Button>
+      <Button variant="contained">Update</Button>
     </CardActions>
   </Card>
 </Grid>

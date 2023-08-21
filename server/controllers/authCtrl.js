@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const Event = require('../models/Event');
 const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generate')
 const nodemailer = require('nodemailer');
@@ -58,7 +57,7 @@ const signupCtrl =  async (req, res) => {
                 text: `Your OTP is: ${otp}`
             }
             const info = await transporter.sendMail(mailOptions)
-            console.log('Email sent:', info.response , otp);
+            
             return 
         } catch (error) {
             return res.status(500).json({ success: false, error: error.message });
@@ -117,9 +116,9 @@ const signupCtrl =  async (req, res) => {
 const verifyOtpCtrl = async (req, res) => {
   try {    
     const { otp, signupResponse } = req.body;
-    console.log(otp)
+    
     const mailOtp = await signupResponse.mailOtp;
-    console.log(mailOtp);
+    
 
     if (!otp) {
       return res.status(400).json({ success: false, error: 'Please enter the otp' });
@@ -134,7 +133,7 @@ const verifyOtpCtrl = async (req, res) => {
         { isVerified: true },
         { new: true }
       );
-      console.log(verifiedUser);
+      
       return res.status(200).json({ success: true, message: 'Evntya account created successfully ' });  
     } else {      
       return res.status(400).json({ success: false, error: 'OTP mismatched' });
@@ -166,7 +165,7 @@ const signinCtrl = async (req, res) => {
     }
 
     const userPwd = user.password
-    console.log(userPwd)
+    
     if(!userPwd){
       return res.status(401).json({ error: 'You must sign in with Google' });
     }
@@ -178,9 +177,9 @@ const signinCtrl = async (req, res) => {
 
      // Store the user's ID in the session
      req.session.userId = user._id;
-    //  req.session.role = email === adminEmail ? 'admin' : 'user';
+    
 
-     console.log(req.session)
+     
 
     // Generate JWT token for authentication
     const token = jwt.sign(
@@ -190,7 +189,7 @@ const signinCtrl = async (req, res) => {
         expiresIn: "2h"
       }
       );
-    console.log(token)  
+      
     // Return the token to the client
     res.json({ token });
   } catch (error) {
@@ -274,7 +273,7 @@ catch (error) {
 
 const googleSigninCtrl = async (req, res) => {
   try {
-    console.log("1000")
+    
     res.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
     const { client_id, jwtToken } = req.body;
 
@@ -286,7 +285,7 @@ const googleSigninCtrl = async (req, res) => {
     const given_name = payload['given_name'];
     const family_name = payload['family_name'];
     // ...
-    console.log(email,picture,given_name, family_name)
+    
 
     // Check if the user with the provided email exists
     let user = await User.findOne({ email });
@@ -302,7 +301,7 @@ const googleSigninCtrl = async (req, res) => {
       await user.save();
     } else {
       // Check if the user is blocked
-      console.log(user.isBlocked)
+      
       if (user.isBlocked) {
         return res.status(403).json({ error: 'You have been blocked' });
       }

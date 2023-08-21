@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid, Typography, Box } from '@mui/material';
+import { TextField, Button, Grid, Typography, Box, Tooltip, IconButton } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import toast, { Toaster } from 'react-hot-toast';
 
 import { useDispatch } from 'react-redux';
@@ -23,6 +24,14 @@ export const SignupForm = () => {
     fontSize: '14px',
   };
 
+  const checkPasswordStrength = (password) => {
+    // At least 8 characters long, contain at least one uppercase letter, one lowercase letter, 
+    //one number, and one special character
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return strongPasswordRegex.test(password);
+  };
+  
+
   const handleSubmit = (e) => {
   e.preventDefault();    
   // Create a data object with the form fields
@@ -32,13 +41,28 @@ export const SignupForm = () => {
     email,
     password,
   }; 
+
+  if (
+    firstName.trim() === '' ||
+    lastName.trim() === '' ||
+    email.trim() === '' ||
+    password.trim() === ''
+  ) {
+    toast.error('Please fill in all the fields');
+    return;
+  }
+
+  if (!checkPasswordStrength(password)) {
+    toast.error('Password is not strong enough');
+    return;
+  }
   
   if (password !== confirmPassword) {
     toast.error("Password and confirm password don't match");
     return;
   }
 
-  axios.post('/signup', data)
+  axiosInstance.post('/signup', data)
   .then((response) => {    
     // Reset form fields
     setFirstName('')
@@ -54,10 +78,16 @@ export const SignupForm = () => {
     // Handle the successful response
     navigate('/test/otp')
   })
-  .catch((error) => {
+  .catch((error)=> {
     // Handle the error response
-    toast.error(error.response.data.error);
-    });
+    if (error.response) {
+      console.log(error)
+      toast.error(error.response.data.error);
+    } else {
+      toast.error('Something went wrong');
+      console.log(error)
+    }
+  });
   };
 
   return (
@@ -104,6 +134,12 @@ export const SignupForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
           />
+          <Tooltip title="At least 8 characters long, contain at least one uppercase letter, one 
+          lowercase letter, one number, and one special character">
+            <IconButton >
+            <InfoOutlinedIcon sx={{ color: 'red', fontSize: 'large' }} />
+            </IconButton>
+          </Tooltip>
         </Grid>
         <Grid item xs={12}>
         <TextField

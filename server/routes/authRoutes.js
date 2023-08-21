@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { signupCtrl, verifyOtpCtrl, signinCtrl, getUserProfile, 
+const { signupCtrl, verifyOtpCtrl, signinCtrl, 
     forgetCtrl, resetCtrl, googleSigninCtrl} = require('../controllers/authCtrl');
 
 router.post('/signup', signupCtrl);

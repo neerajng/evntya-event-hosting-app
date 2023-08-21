@@ -4,9 +4,7 @@ import { useSelector } from 'react-redux'
 
 export const PrivateRoutes = ({ allowedRole }) => {
     
-    const authState = useSelector((state)=>{ return  state.auths.authState })
-
-    console.log("Protected",authState)  
+    const authState = useSelector((state)=>{ return  state.auths.authState }) 
 
   if (!authState || !authState.token) {
     

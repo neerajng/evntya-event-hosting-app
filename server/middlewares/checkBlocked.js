@@ -1,10 +1,14 @@
-const User = require('../models/User');
+const User = require('../models/User');	
+const jwt = require("jsonwebtoken");
 
 const checkBlocked = async (req, res, next) => {
     try {
       // Get the user ID from the session or authentication token
+      console.log(req.headers.authorization.split(' ')[1])
+
+      // const decoded = jwt.decode(token);
       const userId = req.session.userId || req.user.userId;
-  
+       console.log(userId) 
       // Check if the user exists
       const user = await User.findById(userId);
       if (!user) {

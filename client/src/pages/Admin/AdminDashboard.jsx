@@ -1,16 +1,18 @@
 import React from 'react';
-import { List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Card, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
 
 const users = [
   { id: 1, name: 'Can Handle Users' },
-  { id: 2, name: 'Can handle Events' },
-  { id: 3, name: 'Can Hanadle Tickets' },
+  { id: 2, name: 'Can Handle Events' },
+  { id: 3, name: 'Can Handle Tickets' },
 ];
 
 export const AdminDashboard = () => {
   return (
-    <div>
-      <Typography variant="h3">Admin Dashboard</Typography>
+    <Grid container >      
+    <Grid item xs={12}>
+    <Card sx={{ borderRadius: 5 ,p:5, m:2}} >
+    <Typography variant="h4" my={2}>Admin Dashboard</Typography>
       <List>
         {users.map((user) => (
           <ListItem key={user.id}>
@@ -18,6 +20,10 @@ export const AdminDashboard = () => {
           </ListItem>
         ))}
       </List>
-    </div>
+      </Card>
+      </Grid>
+      </Grid>
+
+    
   );
 };

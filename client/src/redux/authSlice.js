@@ -22,7 +22,6 @@ const authSlice = createSlice({
         },
     },
 })
-console.log(JSON.parse(localStorage.getItem('token'))+'slice')
 
 // this is for dispatch
 export const { setAuth, clearAuth } = authSlice.actions;

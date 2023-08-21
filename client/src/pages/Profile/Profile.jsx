@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig';
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { SignOut } from '../../components/SignOut/SignOut'; 
 import toast, { Toaster } from 'react-hot-toast';
-import { UpdateProfile } from './updateProfile';
+import { UpdateProfile } from './UpdateProfile';
+
+
 
 export const Profile = () => {
   const [user, setUser] = useState({});
   const [eventCount, setEventCount] = useState(0);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   const toastStyle = {
     padding: '10px',
@@ -15,14 +18,19 @@ export const Profile = () => {
   };
   
   useEffect(() => {    
-      axios
-        .get('/profile')
+    axiosInstance
+    .get('/profile', {
+      transformRequest: [(data, headers) => {
+        console.log(headers);
+        return data;
+      }]
+    })
         .then((response) => {
           setUser(response.data);
           setEventCount(response.data.eventCount);
         })
         .catch((error) => {
-          console.log(error);
+          toast.error(error);
         });
   }, []);
 
@@ -36,18 +44,25 @@ export const Profile = () => {
       <Grid item xs={12} sm={6}>
   <Card sx={{ borderRadius: 5}} >
     <CardHeader
-      avatar={<Avatar sx={{ width: 100, height: 100 }} alt={user.name} src={user.picture} referrerpolicy="no-referrer"/>}
+      avatar={<Avatar sx={{ width: 100, height: 100 }} alt={user.name} src={user.picture} />}
       title={<Typography variant="h4">{user.firstName} {user.lastName}</Typography>}
       subheader={<Typography variant="h8">{user.email}</Typography>}
     />
-    <CardActions sx={{ justifyContent: 'center' }}>
-      <Button variant="contained">Follow</Button>
+    <CardActions sx={{ justifyContent: 'center' }}>   
+          {!showUpdateForm && (
+            <Button onClick={() => setShowUpdateForm(true)} variant="contained" color="info">Update</Button>
+          )}
+          {showUpdateForm && (
+            <>
+              <UpdateProfile user={user} setUser={setUser} setShowUpdateForm={setShowUpdateForm} />
+            </>
+          )}        
     </CardActions>
   </Card>
 </Grid>
         <Grid item xs={12} sm={6}>
           <Card sx={{ borderRadius: 5}}>
-            <CardContent>
+            <CardContent >
               <Typography variant="h6">Created Events: {eventCount}</Typography>
             </CardContent>
           </Card>
@@ -69,10 +84,7 @@ export const Profile = () => {
   </Card>
 </Grid>
 
-        <Grid item xs={12}>
-          <UpdateProfile user={user} setUser={setUser} />
-        </Grid>
-
+        
       </Grid>     
       <Toaster
         toastOptions={{

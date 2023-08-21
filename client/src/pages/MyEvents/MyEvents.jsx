@@ -1,29 +1,85 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
+  Button,
   Card,
+  CardActions,
   CardContent,
   CardMedia,
   Grid,
   Typography,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
+import toast, { Toaster } from 'react-hot-toast';
+import EditIcon from '@mui/icons-material/Edit';
+import CancelIcon from '@mui/icons-material/Cancel';
+import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import slugify from 'slugify';
 
 export const MyEvents = () => {
   const [events, setEvents] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const maxDescriptionLength = 100;
+
+  const toastStyle = {
+    padding: '10px',
+    fontSize: '14px',
+  };
 
   const navigate = useNavigate();
 
   const handleCardClick = (event) => {
-    navigate(`/test/event/${event._id}`);
+    const slug = slugify(event.name.toString(), { lower: true, strict: true });
+    console.log(slug)
+    navigate(`/test/event/${slug}`, { state: { id: event._id } });
+  };
+
+  const handleEditClick = (event) => {
+    // Handle the edit event
+    navigate(`/test/edit-event/${event._id}`);
+    console.log(`Edit event: ${event._id}`);
+  };
+
+  const handleCancelClick = (event) => {
+    setSelectedEvent(event); 
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleConfirm = () => {
+    if (selectedEvent) {
+      axiosInstance
+        .post(`/cancel-event/${selectedEvent._id}`)
+        .then((response) => {
+          // Handle the successful response
+          console.log(response.data);
+          toast.loading('Event is being cancelled');
+  
+          setTimeout(() => {
+            navigate(0);
+            toast.success(response.data.message);
+          }, 4000);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      setOpen(false);
+    }
   };
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('/my-events');
+        const response = await axiosInstance.get('/my-events');
         setEvents(response.data);
       } catch (error) {
         console.error(error);
@@ -40,18 +96,29 @@ export const MyEvents = () => {
       <Box p={5}>
         <Grid container spacing={8}>
           {events.map((event) => (
-            <Grid item key={event._id} xs={12} sm={6} md={4}>
+            <Grid item key={event._id} xs={12} sm={6} md={4} >
               <Card
-                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                onClick={() => handleCardClick(event)}
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  opacity: event.canceled ? 0.5 : 1,
+                  pointerEvents: event.canceled ? 'none' : 'auto',
+                  position:event.canceled ? 'relative' : 'none'
+                }}
+                
               >
+              {event.canceled && <DoDisturbIcon sx={{ color: 'red',position: 'absolute', width: "100%", height: "100%" }} />}
+            
                 <CardMedia
                   component="img"
                   sx={{ height: 140 }}
                   image={event.image}
                   alt={event.name}
+                  onClick={() => handleCardClick(event)}
                 />
-                <CardContent sx={{ flexGrow: 1 }}>
+                <CardContent sx={{ flexGrow: 1 }} onClick={() => handleCardClick(event)}>
+
                   <Typography gutterBottom variant="h5" component="div">
                     {event.name}
                   </Typography>
@@ -65,11 +132,48 @@ export const MyEvents = () => {
                       : event.description}
                   </Typography>
                 </CardContent>
+                
+                <CardActions sx={{ justifyContent: 'space-between', px:4,pb:2}}>
+                <Button
+                  size="big"
+                  variant="outlined"
+                  onClick={() => handleEditClick(event)}
+                  startIcon={<EditIcon />}
+                  sx={{ color: 'green', borderColor: 'green',borderRadius:5,mr: 1, width: 120 }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="big"
+                  variant="outlined"
+                  onClick={() => handleCancelClick(event)}
+                  startIcon={<CancelIcon />}
+                  sx={{ color: 'red', borderColor: 'red',borderRadius:5, ml: 1, width: 120 }}
+                >
+                  Cancel
+                </Button>
+              </CardActions>
               </Card>
             </Grid>
           ))}
         </Grid>
       </Box>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to cancel this event?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>No</Button>
+          <Button onClick={handleConfirm}>Yes</Button>
+        </DialogActions>
+      </Dialog>
+      
+      <Toaster
+        toastOptions={{
+          style: toastStyle,
+        }}
+        position="top-right"
+      />
     </Box>
   );
 };

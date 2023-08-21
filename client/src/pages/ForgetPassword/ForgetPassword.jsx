@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Grid, TextField ,Typography } from '@mui/material';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import toast, { Toaster } from 'react-hot-toast';
 
 export const ForgetPasswordForm = () => {
@@ -23,7 +23,7 @@ export const ForgetPasswordForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    axios.post('/forget-password', {email} )
+    axiosInstance.post('/forget-password', {email} )
     .then((response) => {    
       toast.success('A password reset link has been sent to your email.')
       setIsSubmitting(true);      

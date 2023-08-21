@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Box } from '@mui/material';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import toast, { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ export const OtpForm = () => {
       signupResponse
     };
 
-    axios
+    axiosInstance
       .post('/otp', data)
       .then((response) => {
         // Store the response data in Redux

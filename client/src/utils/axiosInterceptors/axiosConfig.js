@@ -1,35 +1,35 @@
 import axios from 'axios';
-import { showSpinner, hideSpinner } from '.././components/Spinner/Spinner';
-import { clearAuth } from '../redux/authSlice'; 
-import store from '../redux/store';
+import { store } from '../../redux/store';
+import { clearAuth } from '../../redux/authSlice'; 
 import { createBrowserHistory } from 'history';
-
 const history = createBrowserHistory();
 
-// Add a request interceptor
-axios.interceptors.request.use(
-  function (config) {
-    // Show spinner
-    showSpinner();
-    return config;
+const instance = axios.create();
+
+
+// Request interceptor
+instance.interceptors.request.use(config => {   
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`
+  }   
+    console.log(config.headers)
+    return config;   
   },
-  function (error) {
-    // Hide spinner
-    hideSpinner();
+
+  error => {  
+    console.log(error)    
     return Promise.reject(error);
   }
+
 );
 
-// Add a response interceptor
-axios.interceptors.response.use(
-  function (response) {
-    // Hide spinner
-    hideSpinner();
+// Response interceptor
+instance.interceptors.response.use(function (response) {
     return response;
   },
-  function (error) {
-    // Hide spinner
-    hideSpinner();
+
+  function (error) {    
     // Check if the user is blocked
     if (
       error.response &&
@@ -39,10 +39,13 @@ axios.interceptors.response.use(
       // Sign out the user and redirect to the sign-in page
       localStorage.removeItem('token');
       localStorage.removeItem('role');
+      localStorage.clear();
       store.dispatch(clearAuth());
       history.push('/test/signin');
     }
-
     return Promise.reject(error);
   }
+
 );
+
+export default instance;

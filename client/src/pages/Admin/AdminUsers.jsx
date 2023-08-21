@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Avatar, Grid, Table, TableBody, TableCell, TableHead, TableContainer,TableRow, Typography, Button, Paper } from '@mui/material';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
+import { Avatar, Grid, Table, TableBody, TableCell, TableHead, 
+  TableContainer,TableRow, Typography, Button, Paper, Card } from '@mui/material';
 
 export const AdminUsers = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     // Fetch users from the backend and update the state
-    axios
+    axiosInstance
       .get('/users')
       .then((response) => setUsers(response.data))
       .catch((error) => console.log(error));
@@ -16,7 +17,7 @@ export const AdminUsers = () => {
   const handleBlockClick = (user) => {
       const userId = user._id
     // Update the blocked status of the user in the backend
-    axios
+    axiosInstance
       .post(`/users/${userId}/block`)
       .then(() => {
         // Update the local state to reflect the change
@@ -30,7 +31,8 @@ export const AdminUsers = () => {
   return (
 <Grid container >      
 <Grid item xs={12}>
-<Typography variant="h4" my={2}>User Management</Typography>
+<Card sx={{ borderRadius: 5 ,p:5, m:2}} >
+<Typography variant="h4" my={2}>Manage Users</Typography>
 <TableContainer component={Paper}>
       <Table sx={{ minWidth: 450 }}>
 
@@ -74,7 +76,9 @@ export const AdminUsers = () => {
           </TableBody>
         </Table>
         </TableContainer>
+        </Card>
       </Grid>
+
     </Grid>
   );
 };

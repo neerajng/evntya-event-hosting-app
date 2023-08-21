@@ -3,6 +3,7 @@ const connectDB = require('./config/db');
 const authRoute = require('./routes/authRoutes');
 const eventRoute = require('./routes/eventRoutes');
 const adminRoute = require('./routes/adminRoutes');
+const ticketRoute = require('./routes/ticketRoutes');
 const cors = require('cors');
 const app = express();
 const PORT = 5000;
@@ -32,6 +33,7 @@ app.use(
 app.use('/', authRoute);
 app.use('/', eventRoute);
 app.use('/', adminRoute);
+app.use('/', ticketRoute);
 
 // Start the server
 app.listen(PORT, () => {
