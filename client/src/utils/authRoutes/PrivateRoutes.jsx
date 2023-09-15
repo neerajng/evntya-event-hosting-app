@@ -5,10 +5,11 @@ import { useSelector } from 'react-redux'
 export const PrivateRoutes = ({ allowedRole }) => {
     
     const authState = useSelector((state)=>{ return  state.auths.authState }) 
+    console.log("Private",authState)
 
   if (!authState || !authState.token) {
     
-    return <Navigate to="/test/signin" />;
+    return <Navigate to="/" />;
 
   } else if (authState.role === allowedRole) {
     

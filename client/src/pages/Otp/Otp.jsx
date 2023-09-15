@@ -28,11 +28,11 @@ export const OtpForm = () => {
     };
 
     axiosInstance
-      .post('/otp', data)
+      .post('/api/otp', data)
       .then((response) => {
         // Store the response data in Redux
         dispatch(OtpResponse(response.data));        
-        navigate('/test/signin');
+        navigate('/signin');
       })
       .catch((error) => {
         // Handle the error response

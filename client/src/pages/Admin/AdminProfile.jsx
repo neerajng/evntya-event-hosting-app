@@ -15,7 +15,7 @@ export const AdminProfile = () => {
   
   useEffect(() => {    
       axiosInstance
-        .get('/admin-profile')
+        .get('/api/admin-profile')
         .then((response) => {
           setUser(response.data);
           setEventCount(response.data.eventCount);

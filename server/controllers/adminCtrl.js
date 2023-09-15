@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const Event = require('../models/Event');
-const Address = require('../models/Address')
 
 const getUsers = async (req, res) => {
     try {
@@ -9,6 +8,18 @@ const getUsers = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: error.message }); 
     }
+};
+
+const adminProfile = async (req, res) => {
+  try {
+    const userId = await req.user.userId ;
+    const user = await User.findById(userId);
+    const eventCount = await Event.countDocuments({ organizer: userId });
+    
+    res.status(200).send({ ...user.toObject(), eventCount });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
 };
 
 const blockUser = async (req, res) => {
@@ -32,5 +43,6 @@ const blockUser = async (req, res) => {
 
 module.exports = {
     getUsers,
+    adminProfile,
     blockUser
 };

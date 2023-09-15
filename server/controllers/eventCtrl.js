@@ -1,13 +1,10 @@
-const User = require('../models/User');
 const Event = require('../models/Event');
 const Address = require('../models/Address')
-const bcrypt = require('bcrypt');
-
   
 const createEvent = async (req, res) => {
     try {
       const { name, startTime, endTime, category, description, location, city, state, country, meetLink } = req.body;
-        const organizer = await req.session.userId
+        const organizer = await req.user.userId
         // Create Address document
         const address = new Address({ location, city, state, country });
         await address.save();
@@ -65,8 +62,9 @@ const updateEvent = async (req, res) => {
   
 
 const myEvents = async (req, res) => {
+  console.log("myEvents")
   try {
-    const userId = await req.session.userId ;
+    const userId = await req.user.userId ;
     const events = await Event.find({ organizer: userId });
     res.status(200).send(events);
   } catch (error) {
@@ -78,8 +76,6 @@ const singleEvent = async (req, res) => {
   try {
     console.log(req.params)
     const event = await Event.findById(req.params.eventId).populate('address').populate('organizer');
-
-    console.log(event)
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
@@ -92,6 +88,7 @@ const singleEvent = async (req, res) => {
 };
 
 const allEvents = async (req, res) => {
+  console.log("allevents")
   try {
     const events = await Event.find().sort({ _id: -1 });
     res.status(200).json(events);
@@ -237,83 +234,15 @@ const searchEvents = async (req, res) => {
   }
 };
 
-
-
-const profile = async (req, res) => {
-  try {
-    
-    const userId = await req.session.userId ;
-    const user = await User.findById(userId);
-    const eventCount = await Event.countDocuments({ organizer: userId });
-    
-    res.status(200).send({ ...user.toObject(), eventCount });
-  } catch (error) {
-    return res.status(500).send({ error: error.message });
-  }
-};
-
-const adminProfile = async (req, res) => {
-  try {
-    const userId = await req.session.userId ;
-    const user = await User.findById(userId);
-    const eventCount = await Event.countDocuments({ organizer: userId });
-    
-    res.status(200).send({ ...user.toObject(), eventCount });
-  } catch (error) {
-    return res.status(500).send({ error: error.message });
-  }
-};
-
-const updateProfile = async (req, res) => {
-  try{
-  const { firstName, lastName, email, password } = req.body;
-
-  // Find the user in the database and update their information
-  const user = await User.findById(req.session.userId); 
-  
-  // Verify the provided current password against the stored hashed password
-  
-  const passwordMatch = await bcrypt.compare(password, user.password);
-  
-  if (!passwordMatch) {
-    return res.status(401).json({ error: 'Please enter the correct password' });
-  }
-
-  // Check if email already exists in the database
-  const emailExists = await User.findOne({ email });
-  if (emailExists) {
-    return res.status(400).json({ error: 'User with this email already exists' });
-  }
-  
-  user.firstName = firstName;
-  user.lastName = lastName;
-  user.email = email;
-
-  await user.save();
-
-  res.status(200).json({message:"User profile updated successfully"});
-
-  }catch (error) {
-    return res.status(500).send({ error: error.message });
-  }
-}
-
-
-
   module.exports = {
     createEvent,
     uploadImage,
     updateEvent,
     myEvents,
-    profile,
     singleEvent,
     allEvents,
     cancelEvent,
     editEvent,
     editEventTwo,
-
-    searchEvents,
-
-    adminProfile,
-    updateProfile    
+    searchEvents         
   };

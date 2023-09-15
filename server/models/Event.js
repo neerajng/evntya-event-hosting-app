@@ -21,6 +21,8 @@ const eventSchema = new mongoose.Schema({
   publishTime: { type: Date }
 });
 
+
+
 const Event = mongoose.model('Event', eventSchema);
 
 module.exports = Event;

@@ -23,7 +23,7 @@ export const SignOut = () => {
     localStorage.clear();
     dispatch(clearAuth());
     dispatch(resetState());
-    navigate('/test/signin') 
+    navigate('/signin') 
   };
 
   return (

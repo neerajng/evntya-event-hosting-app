@@ -13,10 +13,10 @@ import {
 } from '@mui/material';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import AddIcon from '@mui/icons-material/Add';
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import Person3Icon from '@mui/icons-material/Person3';
 import Evntya from '../../components/Evntya/Evntya';
 
-export const NavbarLayout = () => {
+export const NavbarLanding = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,30 +37,14 @@ export const NavbarLayout = () => {
 
         <Hidden smDown>
           <Box>
-            <Button
-              component={Link}
-              to="/create-event"
-              endIcon={<AddIcon/>}
-              sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
-            >
-              Create an Event
-            </Button>
             {' '}
             <Button
               component={Link}
-              to="/my-events"
+              to="/signin"
+              startIcon={<Person3Icon fontSize="large"/>}
               sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
             >
-              My Events
-            </Button>
-            {' '}
-            <Button
-              component={Link}
-              to="/profile"
-              endIcon={<AccountCircle fontSize="large"/>}
-              sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
-            >
-              Profile
+              Sign In
             </Button>
           </Box>
         </Hidden>
@@ -81,7 +65,7 @@ export const NavbarLayout = () => {
                 to="/create-event"
                 sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
               >
-                Create an Event
+                Create an Evenya
               </Typography>
             </MenuItem>
             <MenuItem>
@@ -104,6 +88,7 @@ export const NavbarLayout = () => {
             </MenuItem>
           </Menu>
         </Hidden>
+        
       </Toolbar>
     </AppBar>
     <Outlet/>

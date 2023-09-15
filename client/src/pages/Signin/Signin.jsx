@@ -39,9 +39,8 @@ export const SigninForm = () => {
     };
         
     axiosInstance
-      .post('/signin', data)
+      .post('/api/signin', data)
       .then((response) => {
-        
         const { token } = response.data;        
         
         // Determine the user's role based on their email
@@ -50,19 +49,17 @@ export const SigninForm = () => {
         localStorage.setItem('role', JSON.stringify(role));
         
         // Update the auth state
-        dispatch(setAuth());
-
-        
+        dispatch(setAuth());        
           
 
         setTimeout(() => {
           setLoading(false);
-          email === process.env.REACT_APP_ADMIN ? navigate('/admin') : navigate('/test')
+          email === process.env.REACT_APP_ADMIN ? navigate('/admin') : navigate('/')
         }, 5000);
 
         function fetchEvents() {
           axiosInstance
-            .get('/all-events')
+            .get('/api/all-events')
             .then((response) => {
               const data = response.data;          
               dispatch(setSearchResults(data))
@@ -87,7 +84,7 @@ export const SigninForm = () => {
 
             // Fetch events based on the city
             axiosInstance
-              .get('/search-events', {
+              .get('/api/search-events', {  
                 params: {
                   location: city,
                   category: 'All Events',
@@ -162,7 +159,7 @@ export const SigninForm = () => {
         </Grid>
         <Grid item xs={12}>
           <Typography variant="body2" align="left">
-            <Button component={Link} to="/test/forget-password">Forgot password?</Button>
+            <Button component={Link} to="/forget-password">Forgot password?</Button>
           </Typography>
         </Grid>
 
@@ -180,7 +177,7 @@ export const SigninForm = () => {
 
         <Grid item xs={12}>
           <Typography variant="body2" align="center">
-            New User? <Button component={Link} to = "/test/signup">Sign Up</Button>
+            New User? <Button component={Link} to = "/signup">Sign Up</Button>
           </Typography>
         </Grid>
       </Grid>    

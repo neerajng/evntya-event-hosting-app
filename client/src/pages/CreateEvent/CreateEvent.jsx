@@ -89,11 +89,11 @@ export const CreateEvent = ({ event }) => {
 
   if (event) {
     axiosInstance
-    .put(`/edit-event/${event._id}`, data)
+    .put(`/api/edit-event/${event._id}`, data)
     .then((response) => {
       setTimeout(() => {
         // Code to execute after the delay
-        navigate(`/test/edit-event-two/${event._id}`, {replace:true})        
+        navigate(`/edit-event-two/${event._id}`, {replace:true})        
       }, 2000);
     })
     .catch((error) => {
@@ -101,12 +101,12 @@ export const CreateEvent = ({ event }) => {
     });
   } else {
     axiosInstance
-    .post('/create-event', data)
+    .post('/api/create-event', data)
     .then((response)=>{
       const eventId = response.data.event._id
       setTimeout(() => {
         // Code to execute after the delay
-        navigate('/test/update-event', {replace:true})
+        navigate('/update-event', {replace:true})
         localStorage.setItem('eventId', JSON.stringify(eventId));
       }, 2000);
     })

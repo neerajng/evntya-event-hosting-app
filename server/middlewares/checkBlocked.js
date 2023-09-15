@@ -1,14 +1,10 @@
 const User = require('../models/User');	
-const jwt = require("jsonwebtoken");
 
 const checkBlocked = async (req, res, next) => {
-    try {
-      // Get the user ID from the session or authentication token
-      console.log(req.headers.authorization.split(' ')[1])
-
-      // const decoded = jwt.decode(token);
-      const userId = req.session.userId || req.user.userId;
-       console.log(userId) 
+    try {   
+      
+      console.log("checkblocked") 
+      const userId = req.user.userId;
       // Check if the user exists
       const user = await User.findById(userId);
       if (!user) {
@@ -17,10 +13,7 @@ const checkBlocked = async (req, res, next) => {
   
       // Check if the user is blocked
       if (user.isBlocked) {
-        // Clear the session or authentication token
-        req.session.destroy();
         req.user = null;
-  
         // Return an error response
         return res.status(403).json({ error: 'You have been blocked' });
       }
@@ -33,7 +26,5 @@ const checkBlocked = async (req, res, next) => {
     }
   };
 
-  module.exports ={
-    checkBlocked
-  }
+  module.exports = checkBlocked
   

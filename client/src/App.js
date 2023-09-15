@@ -17,6 +17,8 @@ import { ErrorPage } from './pages/ErrorPage/ErrorPage.jsx';
 import { EditEvent } from './pages/MyEvents/EditEvent.jsx';
 import { EditEvent2 } from './pages/MyEvents/EditEvent2.jsx';
 
+import { Checkout } from './components/Payment/Checkout.jsx';
+
 import { CreateEvent } from './pages/CreateEvent/CreateEvent.jsx';
 import { UpdateEvent } from './pages/CreateEvent/UpdateEvent.jsx';
 import { Profile } from './pages/Profile/Profile.jsx';
@@ -24,6 +26,7 @@ import { AdminDashboard } from './pages/Admin/AdminDashboard.jsx';
 import { AdminProfile } from './pages/Admin/AdminProfile.jsx'
 import { AdminUsers } from './pages/Admin/AdminUsers.jsx'
 import { HomePage } from './pages/HomePage/HomePage.jsx';
+
 
 
 import { PrivateRoutes } from './utils/authRoutes/PrivateRoutes.jsx'
@@ -39,8 +42,9 @@ function App() {
           
           <Routes>
 
-            <Route element={<PublicRoutes />}>
-              <Route path="/test" element={<WelcomeLayout />}>
+            <Route element={<PublicRoutes />}>            
+              <Route index element={<PageLayout><HomePage /> </PageLayout>} />
+              <Route path="" element={<WelcomeLayout />}>
                 <Route path='signup' element={<SignupForm />}/>      
                 <Route path='otp' element={<OtpForm />} /> 
                 <Route path='signin' element={<SigninForm />}/>  
@@ -51,15 +55,16 @@ function App() {
 
              
             <Route element={<PrivateRoutes allowedRole="user"/>}>
-              <Route path='/test' element={<PageLayout/>}> 
-                <Route path="" element={<HomePage/>}/>
+              <Route path='/' element={<PageLayout/>}> 
+                <Route index element={<HomePage/>}/>
                 <Route path='create-event' element={<CreateEvent />} /> 
                 <Route path='update-event' element={<UpdateEvent />} /> 
                 <Route path='my-events' element={<MyEvents />} /> 
                 <Route path='profile' element={<Profile />} /> 
                 <Route path="event/:eventId" element={<EventDetails/>} />  
                 <Route path="edit-event/:id" element={<EditEvent />} />    
-                <Route path="edit-event-two/:id" element={<EditEvent2 />} />            
+                <Route path="edit-event-two/:id" element={<EditEvent2 />} />
+                <Route path="checkout" element={<Checkout />} />            
               </Route>
             </Route>        
 

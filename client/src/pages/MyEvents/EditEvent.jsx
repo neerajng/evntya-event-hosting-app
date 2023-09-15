@@ -10,7 +10,7 @@ export const EditEvent = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axiosInstance.get(`/event/${id}`);
+        const response = await axiosInstance.get(`/api/event/${id}`);
         console.log(response.data);
         setEvent(response.data);
       } catch (error) {

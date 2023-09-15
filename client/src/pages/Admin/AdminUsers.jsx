@@ -9,7 +9,7 @@ export const AdminUsers = () => {
   useEffect(() => {
     // Fetch users from the backend and update the state
     axiosInstance
-      .get('/users')
+      .get('/api/users')
       .then((response) => setUsers(response.data))
       .catch((error) => console.log(error));
   }, []);
@@ -18,7 +18,7 @@ export const AdminUsers = () => {
       const userId = user._id
     // Update the blocked status of the user in the backend
     axiosInstance
-      .post(`/users/${userId}/block`)
+      .post(`/api/users/${userId}/block`)
       .then(() => {
         // Update the local state to reflect the change
         setUsers((users) =>

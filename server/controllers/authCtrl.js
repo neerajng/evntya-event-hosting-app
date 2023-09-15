@@ -64,7 +64,7 @@ const signupCtrl =  async (req, res) => {
         }
     }
 
-    if (!existingUser) {
+    if (!existingUser) { 
       // If user does not exist, create and save the user
       const hashedPassword = await bcrypt.hash(password, salt);
     
@@ -173,13 +173,7 @@ const signinCtrl = async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid password' });
-    }
-
-     // Store the user's ID in the session
-     req.session.userId = user._id;
-    
-
-     
+    }  
 
     // Generate JWT token for authentication
     const token = jwt.sign(
@@ -230,7 +224,7 @@ const forgetCtrl = async (req, res) => {
   })
     const frontendHost = process.env.FRONTEND_HOST;
     // Send an email to the user with the password reset link
-    const resetURL = `http://${frontendHost}/test/reset-password/${token}`;
+    const resetURL = `http://${frontendHost}/reset-password/${token}`;
     const mailOptions = {
       to: email,
       from: process.env.EMAIL,
@@ -312,9 +306,6 @@ const googleSigninCtrl = async (req, res) => {
       user.isVerified = true;
       await user.save();
     }
-
-    // Store the user's ID in the session
-    req.session.userId = user._id;
 
     // Generate JWT token for authentication
     const token = jwt.sign(

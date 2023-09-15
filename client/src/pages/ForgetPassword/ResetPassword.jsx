@@ -20,13 +20,13 @@ export const ResetPasswordForm = () => {
       return toast.error('Passwords should be matched')
     }
     // handle reset password request here
-    axiosInstance.post('/reset-password', { password, token })
+    axiosInstance.post('/api/reset-password', { password, token })
       .then((response) => {
         // handle successful response
         toast.success(response.data.message)
         setTimeout(() => {
           // Code to execute after the delay
-          navigate('/test/signin')
+          navigate('/signin')
         }, 3000);
       })
       .catch((error) => {

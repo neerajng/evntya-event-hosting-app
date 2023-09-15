@@ -15,9 +15,9 @@ export const GoogleSignin = () => {
   const handleSuccess = async (credentialResponse) => {
     // Send the ID token to the backend for verification and storage
     axiosInstance
-      .post('/google-signin', {
+      .post('/api/google-signin', {        
         client_id: credentialResponse.clientId,
-        jwtToken: credentialResponse.credential
+        jwtToken: credentialResponse.credential,
       })
       .then((response) => {        
         const { token, email } = response.data;
@@ -31,13 +31,13 @@ export const GoogleSignin = () => {
         
         setTimeout(() => {
           setLoading(false);
-          email === process.env.REACT_APP_ADMIN ? navigate('/admin') : navigate('/test')
+          email === process.env.REACT_APP_ADMIN ? navigate('/admin') : navigate('/')
         }, 5000);
           
         function fetchEvents() {
           axiosInstance
-            .get('/all-events')
-            .then((response) => {
+            .get('/api/all-events')
+            .then((response) => {              
               const data = response.data;          
               dispatch(setSearchResults(data))
               console.log(data)
@@ -58,16 +58,17 @@ export const GoogleSignin = () => {
             );
             const data = await response.json();
             const { city } = data;
-
+            console.log(city)  
             // Fetch events based on the city
             axiosInstance
-              .get('/search-events', {
+              .get('/api/search-events', {
                 params: {
                   location: city,
                   category: 'All Events',
                 },
               })
               .then((response) => {
+                
                 const data = response.data;
                 if (data.length === 0) {
                   toast.error('No events happening in this city');

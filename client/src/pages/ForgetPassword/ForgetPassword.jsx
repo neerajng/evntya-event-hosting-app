@@ -23,7 +23,7 @@ export const ForgetPasswordForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    axiosInstance.post('/forget-password', {email} )
+    axiosInstance.post('/api/forget-password', {email} )
     .then((response) => {    
       toast.success('A password reset link has been sent to your email.')
       setIsSubmitting(true);      

@@ -42,7 +42,7 @@ const handleImageChange = (e) => {
       const formData = new FormData();
       formData.append('image', image);
       axiosInstance
-        .post('/upload-image', formData)
+        .post('/api/upload-image', formData)
         .then((response) => {
           imageUrl = response.data.imageUrl;
           // Submit event data with image URL and ticket information
@@ -53,11 +53,11 @@ const handleImageChange = (e) => {
 
           if (event) {
             axiosInstance
-              .put(`/edit-event-two/${event._id}`, data)
+              .put(`/api/edit-event-two/${event._id}`, data)
               .then((response) => {
                 toast.success(response.data.message);
                 setTimeout(() => {             
-                  navigate('/test/my-events', { replace: true });
+                  navigate('/my-events', { replace: true });
                 }, 2000);
               })
               .catch((error) => {
@@ -65,13 +65,13 @@ const handleImageChange = (e) => {
               });
           } else {
           axiosInstance
-            .post('/update-event', data)
+            .post('/api/update-event', data)
             .then((response)=>{    
               toast.success(response.data.message)
               setTimeout(() => {
                 localStorage.removeItem('eventId');
                 // Code to execute after delay
-                navigate('/test', {replace:true})
+                navigate('/', {replace:true})
                 console.log(publishTime.toISOString())
                 console.log(response)
               }, 2000);

@@ -76,7 +76,7 @@ export const AdminLayout = () => {
             <MenuItem>
               <Typography
                 component={Link}
-                to="/test/create-event"
+                to="/create-event"
                 sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
               >
                 Create an Event
@@ -85,7 +85,7 @@ export const AdminLayout = () => {
             <MenuItem>
               <Typography
                 component={Link}
-                to="/test/my-events"
+                to="/my-events"
                 sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
               >
                 My Events
@@ -94,7 +94,7 @@ export const AdminLayout = () => {
             <MenuItem>
               <Typography
                 component={Link}
-                to="/test/profile"
+                to="/profile"
                 sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
               >
                 Profile

@@ -1,29 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const { parser } = require('../config/imageUpload');
-const {checkBlocked} = require('../middlewares/checkBlocked')
+const checkBlocked = require('../middlewares/checkBlocked')
+const jwtVerify = require ('../middlewares/jwtVerify')    
 
-const {createEvent,myEvents,profile, updateEvent, uploadImage,
+const {createEvent,myEvents, updateEvent, uploadImage,
     singleEvent,cancelEvent,editEvent,editEventTwo,
-    searchEvents,
-    adminProfile, allEvents, updateProfile } = require('../controllers/eventCtrl');
+    searchEvents, allEvents } = require('../controllers/eventCtrl');
 
-router.post('/create-event',checkBlocked,createEvent )
-router.post('/upload-image', checkBlocked,parser.single('image'),uploadImage)
-router.post('/update-event',checkBlocked,updateEvent )
-router.get('/my-events',checkBlocked, myEvents)
-router.get('/event/:eventId', checkBlocked,singleEvent)
-router.get('/all-events',checkBlocked,allEvents)
-router.post('/cancel-event/:id',checkBlocked,cancelEvent)
-router.put('/edit-event/:id',checkBlocked,editEvent)
-router.put('/edit-event-two/:id',checkBlocked,editEventTwo)
-
-router.get('/search-events',checkBlocked,searchEvents)
-
-router.get('/profile',checkBlocked,profile)
-router.get('/admin-profile',checkBlocked,adminProfile)
-router.put('/update-profile',checkBlocked,updateProfile)
-
-
+router.get('/all-events',allEvents)
+router.get('/search-events',searchEvents)
+router.use(jwtVerify)
+router.use(checkBlocked)
+router.post('/create-event',createEvent )
+router.post('/upload-image', parser.single('image'),uploadImage)
+router.post('/update-event',updateEvent )
+router.get('/my-events', myEvents)
+router.get('/event/:eventId', singleEvent)
+router.post('/cancel-event/:id',cancelEvent)
+router.put('/edit-event/:id',editEvent)
+router.put('/edit-event-two/:id',editEventTwo)
 
 module.exports = router;

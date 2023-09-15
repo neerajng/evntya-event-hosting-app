@@ -37,12 +37,12 @@ export const MyEvents = () => {
   const handleCardClick = (event) => {
     const slug = slugify(event.name.toString(), { lower: true, strict: true });
     console.log(slug)
-    navigate(`/test/event/${slug}`, { state: { id: event._id } });
+    navigate(`/event/${slug}`, { state: { id: event._id } });
   };
 
   const handleEditClick = (event) => {
     // Handle the edit event
-    navigate(`/test/edit-event/${event._id}`);
+    navigate(`/edit-event/${event._id}`);
     console.log(`Edit event: ${event._id}`);
   };
 
@@ -58,7 +58,7 @@ export const MyEvents = () => {
   const handleConfirm = () => {
     if (selectedEvent) {
       axiosInstance
-        .post(`/cancel-event/${selectedEvent._id}`)
+        .post(`/api/cancel-event/${selectedEvent._id}`)
         .then((response) => {
           // Handle the successful response
           console.log(response.data);
@@ -79,10 +79,11 @@ export const MyEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axiosInstance.get('/my-events');
+        const response = await axiosInstance.get('/api/my-events');
         setEvents(response.data);
       } catch (error) {
         console.error(error);
+        toast.error(error.response.data.message)
       }
     };
     fetchEvents();

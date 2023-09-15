@@ -30,7 +30,7 @@ export const DiscoverEvents = () => {
     }
   
     axiosInstance
-      .get('/search-events', {
+      .get('/api/search-events', {
         params: {
           location: location,
           category: cat,

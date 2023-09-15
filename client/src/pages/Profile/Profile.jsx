@@ -19,18 +19,14 @@ export const Profile = () => {
   
   useEffect(() => {    
     axiosInstance
-    .get('/profile', {
-      transformRequest: [(data, headers) => {
-        console.log(headers);
-        return data;
-      }]
-    })
+    .get('/api/profile')
         .then((response) => {
           setUser(response.data);
           setEventCount(response.data.eventCount);
         })
         .catch((error) => {
-          toast.error(error);
+          console.log(error)
+          toast.error(error.response.data.message);
         });
   }, []);
 

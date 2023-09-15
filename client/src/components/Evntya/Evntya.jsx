@@ -23,7 +23,7 @@ const Eventya = () => {
   return (
     <Button
     component={Link}
-    to="/test"
+    to="/"
     sx={style}>
     EVNTYA     
     </Button>

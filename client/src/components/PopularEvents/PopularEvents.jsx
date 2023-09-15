@@ -36,7 +36,7 @@ export const PopularEvents = () => {
   const handleCardClick = (event) => {
     const slug = slugify(event.name.toString(), { lower: true, strict: true });
     console.log(slug)
-    navigate(`/test/event/${slug}`, { state: { id: event._id } });
+    navigate(`/event/${slug}`, { state: { id: event._id } });
 };
 
   const handleCategoryClick = (category) => {
@@ -49,7 +49,7 @@ export const PopularEvents = () => {
     dispatch(setSelectedCategory('selectedDate'));
   };
 
-  let filteredEvents = allEvents;
+  let filteredEvents = allEvents;  
 
   if (selectedCategory !== 'all') {
     filteredEvents = filteredEvents.filter((event) => {
@@ -82,15 +82,16 @@ export const PopularEvents = () => {
       return false;
     });
   }
+  console.log(searchResults)
 
+  if (searchResults.length>0){
   filteredEvents = filteredEvents
     .filter((event) => new Date(event.publishTime) <= new Date())
     .filter(event => 
       searchResults.some(searchResult => searchResult._id === event._id)
     );
-
-  
-  console.log( filteredEvents, searchResults)
+  }
+  console.log( "search", searchResults)
 
 
   return (

@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {checkBlocked} = require('../middlewares/checkBlocked')
 
-const { bookTicket } = require('../controllers/ticketCtrl');
+const { proceedCheckout, confirmTicket } = require('../controllers/ticketCtrl');
 
-router.post('/book-ticket', checkBlocked, bookTicket)
-
+router.post('/proceed-checkout', proceedCheckout)
+router.post('/confirm-ticket', confirmTicket)
 
 module.exports = router;

@@ -19,7 +19,7 @@ export const SignupForm = () => {
   const dispatch = useDispatch()
 
 
-  const toastStyle = {
+  const toastStyle = { 
     padding: '10px',
     fontSize: '14px',
   };
@@ -62,7 +62,7 @@ export const SignupForm = () => {
     return;
   }
 
-  axiosInstance.post('/signup', data)
+  axiosInstance.post('/api/signup', data)
   .then((response) => {    
     // Reset form fields
     setFirstName('')
@@ -76,7 +76,7 @@ export const SignupForm = () => {
     dispatch(SignupResponse(response.data));
 
     // Handle the successful response
-    navigate('/test/otp')
+    navigate('/otp')
   })
   .catch((error)=> {
     // Handle the error response
@@ -163,7 +163,7 @@ export const SignupForm = () => {
             Already a registered user? 
             <Button color="primary"  
             component={Link}
-            to = {'/test/signin'} >
+            to = {'/signin'} >
                 Sign In
             </Button>
           </Typography>

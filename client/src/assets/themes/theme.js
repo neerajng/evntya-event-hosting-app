@@ -1,11 +1,11 @@
 import { createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@emotion/react'; 
 
 
 export const theme = createTheme({
   palette: {
     brandYellow: {
-      main: '#FFF000',
-      
+      main: '#FFF000',      
     },
   },
   typography: {

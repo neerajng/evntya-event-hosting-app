@@ -6,7 +6,6 @@ const history = createBrowserHistory();
 
 const instance = axios.create();
 
-
 // Request interceptor
 instance.interceptors.request.use(config => {   
   const token = localStorage.getItem('token');
@@ -14,35 +13,37 @@ instance.interceptors.request.use(config => {
     config.headers['Authorization'] = `Bearer ${token}`
   }   
     console.log(config.headers)
+    
     return config;   
   },
 
   error => {  
-    console.log(error)    
+    console.log("error")    
     return Promise.reject(error);
   }
 
 );
 
 // Response interceptor
-instance.interceptors.response.use(function (response) {
+instance.interceptors.response.use(response => {
     return response;
   },
 
-  function (error) {    
+  error => {    
     // Check if the user is blocked
     if (
-      error.response &&
-      error.response.status === 403 &&
-      error.response.data.error === 'You have been blocked'
+  (error.response && error.response.status === 403 && error.response.data.error === 'You have been blocked')
+  ||
+  (error.response && error.response.status === 401 && error.response.data.message === 'Token expired')
     ) {
       // Sign out the user and redirect to the sign-in page
       localStorage.removeItem('token');
       localStorage.removeItem('role');
       localStorage.clear();
-      store.dispatch(clearAuth());
-      history.push('/test/signin');
+      store.dispatch(clearAuth());      
+      history.push('/signin');
     }
+    console.log(error)
     return Promise.reject(error);
   }
 

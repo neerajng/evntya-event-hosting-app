@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import jwt_decode from "jwt-decode";
 import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import toast, { Toaster } from 'react-hot-toast';
-import { useParams, useNavigate,useLocation } from 'react-router-dom';
+import {  useNavigate,useLocation } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {
@@ -21,45 +22,68 @@ const labelStyle = { fontWeight: 'bold' };
 
 export const EventDetails = () => {
   const [event, setEvent] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const [ticketQuantities, setTicketQuantities] = useState({});
+  const navigate = useNavigate();
   const location = useLocation();
   const eventId = location.state.id
   console.log(eventId)
-  // const { eventId } = useParams(); 
+  const token = localStorage.getItem("token");
+
+  const decodedToken = jwt_decode(token) 
+  const userId = decodedToken.userId;
+  console.log(userId)
+  console.log(ticketQuantities)
   
 
   useEffect(() => {
     axiosInstance
-      .get(`/event/${eventId}`)
+      .get(`/api/event/${eventId}`)
       .then((response) => {
         setEvent(response.data);
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
+        toast.error(error.response.data.message)
       });
   }, [eventId]);
+  
+
 
   if (!event) {
     return <div>Loading...</div>;
   }
 
   const handleDecreaseQuantity = (ticketName) => {
-    setTicketQuantities(prevQuantities => ({
-      ...prevQuantities,
-      [ticketName]: Math.max((prevQuantities[ticketName] || 0) - 1, 0),
-    }));
-  };  
+
+    console.log("d")
+    setTicketQuantities(prevQuantities => {
+      const ticket = event.tickets.find(ticket => ticket.name === ticketName);
+      return {
+        ...prevQuantities,
+        [ticketName]: {
+          count: Math.max((prevQuantities[ticketName]?.count || 0) - 1, 0),
+          price: ticket.price,
+          total: ticket.quantity,
+          sold: ticket.sold
+        }
+      };
+    });
+  };
   
   const handleIncreaseQuantity = (ticketName) => {
+    console.log("i")
     setTicketQuantities(prevQuantities => {
-      const currentQuantity = prevQuantities[ticketName] || 0;
+      const currentQuantity = prevQuantities[ticketName]?.count || 0;
       const ticket = event.tickets.find(ticket => ticket.name === ticketName);
       if (ticket && currentQuantity < ticket.quantity) {
         return {
           ...prevQuantities,
-          [ticketName]: currentQuantity + 1,
+          [ticketName]: {
+            count: currentQuantity + 1,
+            price: ticket.price,
+            total: ticket.quantity,
+            sold: ticket.sold
+          }
         };
       } else {
         toast.error('No more tickets available');
@@ -68,51 +92,45 @@ export const EventDetails = () => {
     });
   };
   
-  const handleBookTicket = (ticketName) => {
-    const slug = slugify(event.name.toString(), { lower: true, strict: true });
-    const quantity = ticketQuantities[ticketName] || 0;
-    if (quantity === 0) {
+  
+  const handleProceedCheckout = (ticketQuantities) => {
+    // const slug = slugify(event.name.toString(), { lower: true, strict: true });
+    // Check if at least one ticket is selected
+    const totalQuantity = Object.values(ticketQuantities).reduce((a, b) => a + b, 0);
+    if (totalQuantity === 0) {
       toast.error('Please select at least one ticket');
       return;
     }
-  
-    setIsLoading(true); // Show loading indicator
-  
+    const data = {
+      eventId,
+      ticketQuantities,
+      userId
+    }
+    console.log(data)
     // Send request to server to book ticket
     axiosInstance
-      .post('/book-ticket', {
-        eventId: eventId,
-        ticketName: ticketName,
-        quantity: quantity
+      .post('/api/proceed-checkout', {
+        data
       })
       .then((response) => {
-        
-        setIsLoading(false); // Hide loading indicator 
-        
-        const toastId = toast.loading("Booking is being processed")
-        setTimeout(() => {
-          setEvent(response.data.event);                 
-          setTicketQuantities({})
-
-          navigate(`/test/event/${slug}`, { state: { id: event._id } });
-          toast.dismiss(toastId);
-          toast.success('Ticket booked successfully!');
-        }, 2000);
-        
+        const data = response.data; 
+        if (data.errors && data.errors.length > 0) {
+          console.log('Some tickets could not be reserved:', data.errors);
+        } else {
+          console.log(data);
+          navigate('/checkout', { state: { data: {
+            ...data,
+            eventName: event.name
+          }  } });
+        }
       })
       .catch((error) => {
-        setIsLoading(false); // Hide loading indicator
-        
-        console.error(error.response.data.message);
-          if (error.response.status === 500) {
-            toast.error('An internal server error occurred.');
-          } else {
-            toast.error(error.response.data.message);
-          }
+        console.log(error);
       });
-  };
-  
 
+    
+
+  };
 
   return (
     <Box mt={2}>
@@ -172,12 +190,13 @@ export const EventDetails = () => {
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
+
           <Card>
             <CardContent>
               <Typography style={labelStyle} variant="h5">Tickets</Typography>
               <Divider/>
               {event.tickets.map((ticket) => (
-                <><Box key={ticket.name} mt={2} display="flex" justifyContent="space-between">
+                <React.Fragment key={ticket._id}><Box  mt={2} display="flex" justifyContent="space-between">
                   <Box>
                     <Typography>
                       <span style={labelStyle}>Name:</span> {ticket.name}
@@ -201,7 +220,7 @@ export const EventDetails = () => {
                     </Button>
                     <Typography
                       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '2rem' }}>
-                      {ticketQuantities[ticket.name] || 0}
+                      {ticketQuantities[ticket.name]?.count || 0}
                     </Typography>
                     <Button onClick={() => handleIncreaseQuantity(ticket.name)} sx={{ my: 5 }}>
                       <AddIcon />
@@ -209,16 +228,30 @@ export const EventDetails = () => {
                   </Stack>
 
 
-                  {/* Add "Book Ticket" button for each ticket type */}
-                  <Button variant="contained" color="secondary"
-                    onClick={() => handleBookTicket(ticket.name, ticketQuantities[ticket.name] || 0)}
-                    sx={{ my: 5 }}
-                  >
-                    Book Ticket
-                  </Button>
-
-              </Box><Divider /></>
+              </Box><Divider /></React.Fragment>
               ))}
+
+                {/* Total Quantity and Price */}
+                <Box mt={2} display="flex" flexDirection='column' alignItems="flex-end">
+                  <Typography>
+                    <span style={labelStyle}>Total Quantity:</span> 
+                    {Object.values(ticketQuantities).reduce((total, ticket) => total + ticket.count, 0)}
+                  </Typography>
+                  <Typography>
+                    <span style={labelStyle}>Total Price:</span> 
+                    {Object.values(ticketQuantities).reduce((total, ticket) => total + ticket.count * ticket.price, 0)}
+                  </Typography>
+                </Box>
+              
+                <Box display="flex" justifyContent="flex-end">
+                    <Button variant="contained" color="secondary"
+                      onClick={() => handleProceedCheckout(ticketQuantities)}
+                      sx={{ mt: 3 }}
+                    >
+                      Proceed to Checkout
+                    </Button>
+                </Box>
+
             </CardContent>
           </Card>
 
@@ -244,7 +277,7 @@ export const EventDetails = () => {
                     )}
                   </>
                 )}
-
+                
                 {/* Add organizer email */}
                 {event.organizer.email && (
                   <Typography>

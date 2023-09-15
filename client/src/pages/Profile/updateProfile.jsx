@@ -52,7 +52,7 @@ export const UpdateProfile = ({ user, setUser, setShowUpdateForm }) => {
     }
 
     axiosInstance
-      .put('/update-profile', { firstName, lastName, email, password })
+      .put('/api/update-profile', { firstName, lastName, email, password })
       .then((response) => {
         setUser(response.data);
         setShowUpdateForm(false);

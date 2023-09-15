@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Container, Typography, Grid } from '@mui/material';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 export const ErrorPage = () => {
 
+  const navigate = useNavigate()
   
   return (
     <Box
@@ -24,8 +26,7 @@ export const ErrorPage = () => {
               The page you’re looking for doesn’t exist.
             </Typography>
             <Button 
-            component={Link}
-            to="/test"
+            onClick = {()=>navigate(-1)}
             variant="contained">Back Home</Button>
           </Grid>
           <Grid xs={6}>

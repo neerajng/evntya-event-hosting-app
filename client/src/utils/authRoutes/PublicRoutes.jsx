@@ -13,7 +13,8 @@ export const PublicRoutes = () => {
   } else if (authState.role === 'admin') {
     return <Navigate to="/admin" />;
   } else {
-    return <Navigate to="/test" />;
+    <Navigate to="/" />;
+    return <Outlet />;
   }
 }
 
