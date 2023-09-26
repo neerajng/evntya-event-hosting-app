@@ -1,5 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import { ThemeProvider } from '@emotion/react'; 
 
 
 export const theme = createTheme({
@@ -10,5 +9,7 @@ export const theme = createTheme({
   },
   typography: {
     brandFont: "'Jua', sans-serif",
-  },
+  }
+  
 });
+

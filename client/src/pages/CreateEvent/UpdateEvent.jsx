@@ -48,7 +48,7 @@ const handleImageChange = (e) => {
           // Submit event data with image URL and ticket information
           const data = event
           ? { eventId: event._id, image: imageUrl, tickets, publishTime: publishTime.toISOString() }
-          : { eventId: JSON.parse(localStorage.getItem('eventId')), image: imageUrl, tickets, publishTime: publishTime.toISOString() };;
+          : { eventId: JSON.parse(localStorage.getItem('eventId')), image: imageUrl, tickets, publishTime: publishTime.toISOString() };
           console.log(imageUrl);  
 
           if (event) {

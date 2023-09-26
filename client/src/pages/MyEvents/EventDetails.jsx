@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import jwt_decode from "jwt-decode";
 import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import toast, { Toaster } from 'react-hot-toast';
@@ -16,26 +16,24 @@ import {
   Typography,
   Stack
 } from '@mui/material';
-import slugify from 'slugify';
 
 const labelStyle = { fontWeight: 'bold' };
 
 export const EventDetails = () => {
+  const [proceedToCheckout, setProceedToCheckout] = useState(false);
   const [event, setEvent] = useState(null);
   const [ticketQuantities, setTicketQuantities] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
-  const eventId = location.state.id
+  const eventId = location.state?.id
   console.log(eventId)
-  const token = localStorage.getItem("token");
-
-  const decodedToken = jwt_decode(token) 
-  const userId = decodedToken.userId;
-  console.log(userId)
-  console.log(ticketQuantities)
-  
+  const token = localStorage.getItem("token") ? localStorage.getItem("token") : null;
+  const decodedToken = (token) ? jwt_decode(token) : null ;
+  const userId = decodedToken?.userId;
 
   useEffect(() => {
+    (!userId || !eventId ) ? navigate(-1) :
+
     axiosInstance
       .get(`/api/event/${eventId}`)
       .then((response) => {
@@ -45,33 +43,39 @@ export const EventDetails = () => {
         console.log(error);
         toast.error(error.response.data.message)
       });
-  }, [eventId]);
+  }, [eventId, userId]); 
   
 
-
   if (!event) {
-    return <div>Loading...</div>;
+    return <Box>Loading...</Box>;
   }
 
   const handleDecreaseQuantity = (ticketName) => {
-
-    console.log("d")
-    setTicketQuantities(prevQuantities => {
-      const ticket = event.tickets.find(ticket => ticket.name === ticketName);
-      return {
-        ...prevQuantities,
-        [ticketName]: {
-          count: Math.max((prevQuantities[ticketName]?.count || 0) - 1, 0),
+    setTicketQuantities((prevQuantities) => {
+      const ticket = event.tickets.find((ticket) => ticket.name === ticketName);
+      const currentCount = prevQuantities[ticketName]?.count || 0;
+      if (currentCount > 0) {
+        const updatedQuantities = { ...prevQuantities };
+        updatedQuantities[ticketName] = {
+          count: currentCount - 1,
           price: ticket.price,
           total: ticket.quantity,
-          sold: ticket.sold
+          sold: ticket.sold,
+        };
+  
+        // Remove the ticket entirely if the count becomes 0
+        if (updatedQuantities[ticketName].count === 0) {
+          delete updatedQuantities[ticketName];
         }
-      };
+  
+        return updatedQuantities;
+      }
+  
+      return prevQuantities;
     });
-  };
+  };  
   
   const handleIncreaseQuantity = (ticketName) => {
-    console.log("i")
     setTicketQuantities(prevQuantities => {
       const currentQuantity = prevQuantities[ticketName]?.count || 0;
       const ticket = event.tickets.find(ticket => ticket.name === ticketName);
@@ -118,14 +122,17 @@ export const EventDetails = () => {
           console.log('Some tickets could not be reserved:', data.errors);
         } else {
           console.log(data);
+          setProceedToCheckout(true);
           navigate('/checkout', { state: { data: {
             ...data,
-            eventName: event.name
+            eventName: event.name,
+            totalPrice: Object.values(ticketQuantities).reduce((total, ticket) => total + ticket.count * ticket.price, 0)
           }  } });
         }
       })
       .catch((error) => {
         console.log(error);
+        toast.error(error.response.data.error)
       });
 
     

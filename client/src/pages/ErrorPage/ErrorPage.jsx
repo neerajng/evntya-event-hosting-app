@@ -16,9 +16,9 @@ export const ErrorPage = () => {
         minHeight: '100vh',
       }}
     >
-      <Container maxWidth="md" backgroundColor="green">
+      <Container maxWidth="md" >
         <Grid container spacing={2}>
-          <Grid xs={6}>
+          <Grid item xs={6}>
             <Typography variant="h1">
               404
             </Typography>
@@ -29,7 +29,7 @@ export const ErrorPage = () => {
             onClick = {()=>navigate(-1)}
             variant="contained">Back Home</Button>
           </Grid>
-          <Grid xs={6}>
+          <Grid item xs={6}>
             <img
               src="https://cdn.pixabay.com/photo/2017/03/09/12/31/error-2129569__340.jpg"
               alt=""

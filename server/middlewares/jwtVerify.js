@@ -6,7 +6,7 @@ const jwtVerify = (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1].replace(/"/g, ''); 
     // Verify the token
     if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
+        return res.status(401).json({ message: 'Please do login.' });
     }
     try {
       console.log("jwtverfied");

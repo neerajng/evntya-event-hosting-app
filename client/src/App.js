@@ -27,13 +27,13 @@ import { AdminProfile } from './pages/Admin/AdminProfile.jsx'
 import { AdminUsers } from './pages/Admin/AdminUsers.jsx'
 import { HomePage } from './pages/HomePage/HomePage.jsx';
 
-
-
 import { PrivateRoutes } from './utils/authRoutes/PrivateRoutes.jsx'
-import { PublicRoutes } from './utils/authRoutes/PublicRoutes.jsx';  
-
-
+import { PublicRoutes } from './utils/authRoutes/PublicRoutes.jsx'; 
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js'; 
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 function App() {
+
   return (
     <div className="App" >
       <header className="App-header">
@@ -43,7 +43,7 @@ function App() {
           <Routes>
 
             <Route element={<PublicRoutes />}>            
-              <Route index element={<PageLayout><HomePage /> </PageLayout>} />
+              <Route path='/' element={<PageLayout><HomePage /> </PageLayout>} />
               <Route path="" element={<WelcomeLayout />}>
                 <Route path='signup' element={<SignupForm />}/>      
                 <Route path='otp' element={<OtpForm />} /> 
@@ -64,7 +64,8 @@ function App() {
                 <Route path="event/:eventId" element={<EventDetails/>} />  
                 <Route path="edit-event/:id" element={<EditEvent />} />    
                 <Route path="edit-event-two/:id" element={<EditEvent2 />} />
-                <Route path="checkout" element={<Checkout />} />            
+                <Route path="checkout" element={<Elements stripe={stripePromise}><Checkout /></Elements>} />
+                <Route path="success" element={<ErrorPage />} />            
               </Route>
             </Route>        
 

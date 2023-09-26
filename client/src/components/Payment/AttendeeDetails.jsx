@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Grid,
@@ -8,7 +8,7 @@ import {
 
 export const AttendeeDetails = ({ form, handleChange }) => {
   
-
+  
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
@@ -18,13 +18,13 @@ export const AttendeeDetails = ({ form, handleChange }) => {
         <Grid item xs={12}>
           <TextField
             required
-            id="email"
-            name="email"
-            label="Email"
+            id="name"
+            name="name"
+            label="Name"
             fullWidth
             autoComplete="shipping address-line1"
             variant="standard"
-            value={form.email}
+            value={form.name}
             onChange={handleChange}
           />
         </Grid>

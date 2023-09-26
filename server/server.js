@@ -10,6 +10,7 @@ const app = express();
 const PORT = 5000;
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const cron = require('node-cron');
 require('dotenv').config();
 
 // Enable CORS
@@ -29,6 +30,11 @@ app.use(
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI, ttl: 24 * 60 * 60 }),
   })
 );
+
+const cleanupTickets = require('./utils/cleanup');
+
+const cleanupSchedule = '*/30 * * * *'; // Runs every 30 mins
+cron.schedule(cleanupSchedule, cleanupTickets);
 
 // Routes
 app.use('/api', authRoute);

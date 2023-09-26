@@ -2,15 +2,16 @@ const User = require('../models/User');
 const Event = require('../models/Event');
 const Ticket = require('../models/Ticket')
 const uuid = require('uuid');
+const { v4 : uuidv4 } = require('uuid');
 const bookingId = uuid.v4();
-const stripe = require('stripe')
+const stripe = require('stripe')(process.env.STRIPE_SEC_KEY)
 
 const proceedCheckout = async (req, res) => {
   try {
     const { eventId, ticketQuantities, userId } = req.body.data;
     console.log(ticketQuantities)
     console.log("proceed")
-    if (!eventId || !ticketQuantities || !userId) {
+    if (!eventId || !ticketQuantities || !userId ) {
       return res.status(400).json({ error: 'Invalid input data' });
     }
 
@@ -66,10 +67,25 @@ const proceedCheckout = async (req, res) => {
   }
 };
 
+const stripePay =  async (req, res) => {
+  const { totalPrice } = req.body;
+  console.log(totalPrice)
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount:totalPrice*100,
+    currency: "inr",
+    // description:"Created by stripe.com/docs demo",
+  });
+  console.log('PaymentIntent ID:', paymentIntent.id);
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,    
+  });
+}
 
 const confirmTicket = async (req, res) => {
   const { form } = await req.body;
-
+  
   console.log(form)
 }
 
@@ -77,5 +93,6 @@ const confirmTicket = async (req, res) => {
 
 module.exports = {
     proceedCheckout,
-    confirmTicket
+    confirmTicket,
+    stripePay
   };

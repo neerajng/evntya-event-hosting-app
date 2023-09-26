@@ -4,7 +4,9 @@ import { clearAuth } from '../../redux/authSlice';
 import { createBrowserHistory } from 'history';
 const history = createBrowserHistory();
 
-const instance = axios.create();
+const instance = axios.create({
+  baseURL: 'http://localhost:5000'
+});
 
 // Request interceptor
 instance.interceptors.request.use(config => {   

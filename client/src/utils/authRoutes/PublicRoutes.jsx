@@ -9,12 +9,12 @@ export const PublicRoutes = () => {
     console.log("Public",authState)
 
   if (!authState || !authState.token) {
+    console.log("pnull")  
     return <Outlet />;
   } else if (authState.role === 'admin') {
     return <Navigate to="/admin" />;
-  } else {
-    <Navigate to="/" />;
-    return <Outlet />;
+  } else if (authState.role === 'user'){    
+    return <Navigate to="/" />;
   }
 }
 
