@@ -1,0 +1,33 @@
+/* PopularEvents.css (or any appropriate CSS file) */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination li {
+    margin: 0 5px;
+    cursor: pointer;
+    list-style: none;
+    display: inline;
+  }
+  
+  .pagination a {
+    text-decoration: none;
+    color: #333;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+  }
+  
+  .pagination a:hover {
+    background-color: #ddd;
+  }
+  
+  .pagination .active a {
+    background-color: #333;
+    color: white;
+  }
+  

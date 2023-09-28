@@ -19,13 +19,16 @@ const style = {
   },
 };
 
-const Eventya = () => {
+const Eventya = ({isAdmin, isUser}) => { 
+
+  const toValue = isAdmin ? '/admin' : isUser ?'/' :'/'
+
   return (
-    <Button
+    <Button 
     component={Link}
-    to="/"
+    to={toValue}
     sx={style}>
-    EVNTYA     
+    EVNTYA    
     </Button>
   );
 };

@@ -23,14 +23,14 @@ export const SummaryPage = ({ form, bookingData, setTotal }) => {
         {bookingData.tickets.map((ticket, index) => (
           <ListItem key={index} sx={{ py: 1, px: 0 }}>
             <ListItemText primary={ticket.ticketName} secondary={`Qty : ${ticket.quantity}`} />
-            <Typography variant="body2">{`$${(ticket.price * ticket.quantity).toFixed(2)}`}</Typography>
+            <Typography variant="body2">{`₹${(ticket.price * ticket.quantity).toFixed(2)}`}</Typography>
           </ListItem>
         ))}
         <Divider/>
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            {`$${bookingData.totalPrice.toFixed(2)}`}
+            {`₹${bookingData.totalPrice.toFixed(2)}`}
           </Typography>
 
         </ListItem>

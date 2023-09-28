@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import jwt_decode from "jwt-decode";
+import Pagination from "react-js-pagination";
+import "./PopularEvents.css"
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCategory } from '../../redux/eventsSlice';
 import {
@@ -9,7 +12,8 @@ import {
   CardMedia,
   Grid,
   Typography,
-  Stack
+  Stack,
+  TextField
 } from '@mui/material';
 import toast, { Toaster } from 'react-hot-toast';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -26,17 +30,35 @@ const buttonStyle = {
 export const PopularEvents = () => {
   const { allEvents, selectedCategory, searchResults, location } = useSelector((state) => state.events);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
+
   const maxDescriptionLength = 100;
+
+  const token = localStorage.getItem("token") ? localStorage.getItem("token") : null;
+  const decodedToken = (token) ? jwt_decode(token) : null ;
+  const userId = decodedToken?.userId;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
 
   console.log(allEvents);
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   const handleCardClick = (event) => {
     const slug = slugify(event.name.toString(), { lower: true, strict: true });
-    console.log(slug)
-    navigate(`/event/${slug}`, { state: { id: event._id } });
+    console.log(slug);
+    userId ? navigate(`/event/${slug}`, { state: { id: event._id } }) : toast.error('Please do login first');
 };
 
   const handleCategoryClick = (category) => {
@@ -49,7 +71,9 @@ export const PopularEvents = () => {
     dispatch(setSelectedCategory('selectedDate'));
   };
 
-  let filteredEvents = allEvents;  
+  let filteredEvents = allEvents.filter((event) =>
+  event.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   if (selectedCategory !== 'all') {
     filteredEvents = filteredEvents.filter((event) => {
@@ -92,6 +116,10 @@ export const PopularEvents = () => {
     );
   }
   console.log( "search", searchResults)
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredEvents.slice(indexOfFirstItem, indexOfLastItem);
 
 
   return (
@@ -140,11 +168,16 @@ export const PopularEvents = () => {
               },
             }} value={dayjs(selectedDate)} onChange={handleDateChange} />
           </LocalizationProvider>
+            <TextField
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search events..."
+            />
         </Stack>
 
         <Grid container spacing={8}>
-  {filteredEvents.length > 0 ? (
-    filteredEvents.map((event) => (
+  {currentItems.length > 0 ? (
+    currentItems.map((event) => (
       <Grid item key={event._id} xs={12} sm={6} md={4} >
         <Card
           sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -184,6 +217,15 @@ export const PopularEvents = () => {
 
       </Box>
       <Toaster toastOptions={{ sx: { padding: '10px', fontSize: '14px' } }} position="top-right" />
+      <Box>
+      <Pagination
+        activePage={currentPage}
+        itemsCountPerPage={itemsPerPage}
+        totalItemsCount={filteredEvents.length}
+        pageRangeDisplayed={6}
+        onChange={handlePageChange}
+      />
+      </Box>
     </Box>
   );
 };

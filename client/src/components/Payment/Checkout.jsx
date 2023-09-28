@@ -9,7 +9,11 @@ import {
   Button,
   Typography
 } from '@mui/material';
-
+import {
+  CardElement,
+  useStripe,
+  useElements
+} from "@stripe/react-stripe-js";
 import toast, { Toaster } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
@@ -20,26 +24,32 @@ import { SummaryPage } from './SummaryPage';
 
 const steps = ['Attendee Details', 'Review and Confirm', 'Confirm Payment'];
 
-function getStepContent(step, form, handleChange, bookingData, clientSecret) {
+function getStepContent(step, form, handleChange, bookingData, clientSecret, handleSubmit) {
   switch (step) {
     case 0:
       return <AttendeeDetails form={form} handleChange={handleChange} />;
     case 1:
       return <SummaryPage form={form} bookingData={bookingData} />; 
     case 2:
-      return <PaymentDetails form={form} handleChange={handleChange} clientSecret={clientSecret} />;
+      return <PaymentDetails form={form} handleChange={handleChange} clientSecret={clientSecret} 
+      handleSubmit={handleSubmit} />;
     default:
       throw new Error('Unknown step');
   }
 }
 
 export const Checkout = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
   const [activeStep, setActiveStep] = useState(0);
   const location = useLocation();
+  const stripe = useStripe();
+  const elements = useElements();
   const navigate = useNavigate();
   const bookingData = location.state?.data; 
-  console.log(location.key)
+  const bookingId = bookingData.tickets[0].bookingId
+  console.log(bookingId)
+
   useEffect(() => {
     (!bookingData) ? navigate(-1) :
 
@@ -53,8 +63,7 @@ export const Checkout = () => {
         console.log(error);
         toast.error(error.message);
       });
-  }, [bookingData]);
-  
+  }, [bookingData]);  
 
   const [form, setForm] = useState({
     name: '',
@@ -113,15 +122,33 @@ export const Checkout = () => {
     setActiveStep(activeStep - 1);
   };
 
-  const handleConfirm = async () => {
-    try {
-      console.log(form)
-      const response = await axiosInstance.post('/api/confirm-ticket', { form });
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      // Stripe.js hasn't yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
     }
+
+    setIsLoading(true);
+    
+    const result = await stripe.confirmCardPayment(clientSecret,{
+      payment_method:{card:elements.getElement(CardElement)}
+    });
+    console.log(result);
+
+    if(result.paymentIntent){
+        navigate('/confirmation', { state: { bookingId }, replace: true });
+    }else{
+      toast.error(result.error.message)
+    }
+    
+
+    setIsLoading(false);
   };
+
+
 
   return (
     <Box>
@@ -142,7 +169,7 @@ export const Checkout = () => {
           </Stepper>
 
           <Box>
-            {getStepContent(activeStep, form, handleChange, bookingData, clientSecret)}
+            {getStepContent(activeStep, form, handleChange, bookingData, clientSecret, handleSubmit)}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
 
               {activeStep !== 0 && (

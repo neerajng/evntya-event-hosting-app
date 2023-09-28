@@ -13,9 +13,8 @@ instance.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`
-  }   
-    console.log(config.headers)
-    
+  } 
+        
     return config;   
   },
 
@@ -27,7 +26,7 @@ instance.interceptors.request.use(config => {
 );
 
 // Response interceptor
-instance.interceptors.response.use(response => {
+instance.interceptors.response.use(response => {  
     return response;
   },
 

@@ -14,7 +14,8 @@ import {
   Divider,
   Grid,
   Typography,
-  Stack
+  Stack,
+  Alert
 } from '@mui/material';
 
 const labelStyle = { fontWeight: 'bold' };
@@ -32,7 +33,7 @@ export const EventDetails = () => {
   const userId = decodedToken?.userId;
 
   useEffect(() => {
-    (!userId || !eventId ) ? navigate(-1) :
+    (!token || !eventId ) ? toast.error("Please do login first") :
 
     axiosInstance
       .get(`/api/event/${eventId}`)
@@ -43,11 +44,11 @@ export const EventDetails = () => {
         console.log(error);
         toast.error(error.response.data.message)
       });
-  }, [eventId, userId]); 
+  }, [navigate, token,eventId]); 
   
 
   if (!event) {
-    return <Box>Loading...</Box>;
+    return <Box>Loading....</Box>;
   }
 
   const handleDecreaseQuantity = (ticketName) => {
@@ -94,8 +95,7 @@ export const EventDetails = () => {
         return prevQuantities;
       }
     });
-  };
-  
+  };  
   
   const handleProceedCheckout = (ticketQuantities) => {
     // const slug = slugify(event.name.toString(), { lower: true, strict: true });
@@ -212,11 +212,13 @@ export const EventDetails = () => {
                       <span style={labelStyle}>Price:</span> {ticket.price}
                     </Typography>
                     <Typography>
-                      <span style={labelStyle}>Quantity:</span> {ticket.quantity}
+                      <span style={labelStyle}>Sold:</span> {ticket.sold} 
                     </Typography>
-                    <Typography>
-                      <span style={labelStyle}>Sold:</span> {ticket.sold}
-                    </Typography>
+                    {ticket.quantity <= 10 &&
+                    <Alert severity="warning">
+                      Only {ticket.quantity} ticket(s) left.
+                    </Alert>
+                    }
                   </Box>
 
                   

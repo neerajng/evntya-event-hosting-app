@@ -18,6 +18,7 @@ import Evntya from '../../components/Evntya/Evntya';
 
 export const AdminLayout = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const isAdmin = true;
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -25,13 +26,13 @@ export const AdminLayout = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
+  
   return (
     <>
     <AppBar position="static" component="nav" sx={{ pb: 2,bgcolor: 'primary.main', color: 'black' }}>
       <Toolbar>
         <Typography variant="h8" component="div" sx={{ flexGrow: 1 }}>
-          <Evntya />
+        <Evntya isAdmin={isAdmin} />
         </Typography>
 
         <Hidden smDown>
