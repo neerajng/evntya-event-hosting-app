@@ -29,7 +29,7 @@ export const HomePage = () => {
   }, [dispatch]);
 
   if (isLoading) {
-    return <Box>Loading...</Box>;
+    return <Box>Loading..</Box>;
   }
 
   return (

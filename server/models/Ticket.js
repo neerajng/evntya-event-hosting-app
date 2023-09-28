@@ -8,9 +8,9 @@ const ticketSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     ticketName: { type: String, required: true },
     quantity: { type: Number, required: true },
-    price: { type: Number, required: true }, // Added price field
-    total: { type: Number, required: true }, // Added total field
-    sold: { type: Number, default: false }, // Added sold field
+    price: { type: Number, required: true },
+    total: { type: Number, required: true },
+    sold: { type: Number, default: false }, 
     status: { type: String, enum: ['pending', 'confirmed'], default: 'pending' },
     createdAt: { type: Date, default: Date.now }
 });

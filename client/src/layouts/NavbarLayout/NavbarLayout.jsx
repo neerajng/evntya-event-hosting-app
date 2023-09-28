@@ -18,6 +18,7 @@ import Evntya from '../../components/Evntya/Evntya';
 
 export const NavbarLayout = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const isUser = true;
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -31,8 +32,8 @@ export const NavbarLayout = () => {
     <AppBar position="static" component="nav" sx={{ pb: 2,bgcolor: 'brandYellow.main', color: 'black' }}>
       <Toolbar>
         <Typography variant="h8" component="div" sx={{ flexGrow: 1 }}>
-          <Evntya component={Link}
-              to="/"/>
+        <Evntya isUser={isUser} />
+        
         </Typography>
 
         <Hidden smDown>
@@ -52,6 +53,14 @@ export const NavbarLayout = () => {
               sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
             >
               My Events
+            </Button>
+            {' '}
+            <Button
+              component={Link}
+              to="/bookings"
+              sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
+            >
+              My Bookings
             </Button>
             {' '}
             <Button
@@ -91,6 +100,15 @@ export const NavbarLayout = () => {
                 sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
               >
                 My Events
+              </Typography>
+            </MenuItem>
+            <MenuItem>
+              <Typography
+                component={Link}
+                to="/bookings"
+                sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
+              >
+                My Bookings
               </Typography>
             </MenuItem>
             <MenuItem>

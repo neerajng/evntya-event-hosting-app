@@ -16,6 +16,8 @@ import { EventDetails } from './pages/MyEvents/EventDetails.jsx';
 import { ErrorPage } from './pages/ErrorPage/ErrorPage.jsx'; 
 import { EditEvent } from './pages/MyEvents/EditEvent.jsx';
 import { EditEvent2 } from './pages/MyEvents/EditEvent2.jsx';
+import { BookingConfirmation } from './pages/ErrorPage/BookingConfirmation.jsx';
+import { Bookings } from './pages/Bookings/Bookings.jsx';
 
 import { Checkout } from './components/Payment/Checkout.jsx';
 
@@ -65,7 +67,8 @@ function App() {
                 <Route path="edit-event/:id" element={<EditEvent />} />    
                 <Route path="edit-event-two/:id" element={<EditEvent2 />} />
                 <Route path="checkout" element={<Elements stripe={stripePromise}><Checkout /></Elements>} />
-                <Route path="success" element={<ErrorPage />} />            
+                <Route path="confirmation" element={<BookingConfirmation />} /> 
+                <Route path="bookings" element={<Bookings />} />            
               </Route>
             </Route>        
 

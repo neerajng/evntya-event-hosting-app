@@ -31,8 +31,7 @@ export const NavbarLanding = () => {
     <AppBar position="static" component="nav" sx={{ pb: 2,bgcolor: 'brandYellow.main', color: 'black' }}>
       <Toolbar>
         <Typography variant="h8" component="div" sx={{ flexGrow: 1 }}>
-          <Evntya component={Link}
-              to="/"/>
+          <Evntya />
         </Typography>
 
         <Hidden smDown>
@@ -62,13 +61,13 @@ export const NavbarLanding = () => {
             <MenuItem>
               <Typography
                 component={Link}
-                to="/create-event"
+                to="/signin"
                 sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
               >
-                Create an Evenya
+                Sign In
               </Typography>
             </MenuItem>
-            <MenuItem>
+            {/* <MenuItem>
               <Typography
                 component={Link}
                 to="/my-events"
@@ -85,7 +84,7 @@ export const NavbarLanding = () => {
               >
                 Profile
               </Typography>
-            </MenuItem>
+            </MenuItem> */}
           </Menu>
         </Hidden>
         

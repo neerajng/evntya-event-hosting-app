@@ -3,12 +3,12 @@ const Event = require('../models/Event');
 const Ticket = require('../models/Ticket')
 const uuid = require('uuid');
 const { v4 : uuidv4 } = require('uuid');
-const bookingId = uuid.v4();
 const stripe = require('stripe')(process.env.STRIPE_SEC_KEY)
 
 const proceedCheckout = async (req, res) => {
   try {
     const { eventId, ticketQuantities, userId } = req.body.data;
+    const bookingId = uuid.v4();
     console.log(ticketQuantities)
     console.log("proceed")
     if (!eventId || !ticketQuantities || !userId ) {
@@ -74,6 +74,9 @@ const stripePay =  async (req, res) => {
   const paymentIntent = await stripe.paymentIntents.create({
     amount:totalPrice*100,
     currency: "inr",
+    metadata : {
+      
+    }
     // description:"Created by stripe.com/docs demo",
   });
   console.log('PaymentIntent ID:', paymentIntent.id);
@@ -83,16 +86,86 @@ const stripePay =  async (req, res) => {
   });
 }
 
-const confirmTicket = async (req, res) => {
-  const { form } = await req.body;
-  
-  console.log(form)
+const bookingConfirmation = async (req, res) => {
+  try {
+    const bookingId = req.body.bookingId;
+    console.log("bookingId"+bookingId)
+    // Fetch the booking data from the database using the bookingId
+    const tickets = await Ticket.find({ bookingId });
+    console.log("first:"+ tickets);
+    // Update the status and sold fields of each ticket
+    tickets.forEach(async (ticket) => {
+      ticket.status = 'confirmed';
+      await ticket.save();
+    });
+
+    console.log("second:"+ tickets);
+
+    // Assuming all tickets belong to the same event, fetch the event associated with the first ticket
+    const event = await Event.findById(tickets[0].event);
+    console.log(event)    
+
+    // Update the total and sold fields of each ticket in the event's tickets array
+    event.tickets.forEach((eventTicket) => {
+      const ticket = tickets.find(ticket => String(ticket.ticketName) === String(eventTicket.name));
+      if (ticket) {
+        console.log(ticket)
+        eventTicket.quantity -= ticket.quantity;
+        eventTicket.sold += ticket.quantity;
+      }
+    });
+
+    // Save the updated event
+    await event.save();
+
+    // Populate the event data
+    const bookingData = await Ticket.find({ bookingId }).populate({
+      path: 'event',
+      populate: { path: 'address' }
+    });
+    console.log(bookingData)
+    
+    // Send the updated booking data in the response
+    res.json(bookingData);
+  } catch (error) {
+    console.error('There was an error!', error);
+    
+    // Send a 500 Internal Server Error response if something goes wrong
+    res.status(500).send('Internal Server Error');
+  }
 }
 
-
+const bookings = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    console.log(userId);
+    
+    // Find all unique booking IDs for the logged-in user
+    const bookingIds = await Ticket.distinct('bookingId', { user: userId });
+    console.log("bookingIds" + bookingIds);
+    
+    // For each booking ID, find the corresponding tickets and populate the event and address data
+    const bookings = await Promise.all(bookingIds.map(async (bookingId) => {
+      const tickets = await Ticket.find({ bookingId }).populate({
+        path: 'event',
+        populate: { path: 'address' }
+      });
+      return { bookingId, tickets };
+    }));
+    console.log("bookings:" + bookings);
+    
+    // Send the bookings as the response
+    res.json(bookings);
+  } catch (error) {
+    console.error('Error fetching bookings', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+ 
 
 module.exports = {
     proceedCheckout,
-    confirmTicket,
-    stripePay
+    stripePay,
+    bookingConfirmation,
+    bookings
   };
