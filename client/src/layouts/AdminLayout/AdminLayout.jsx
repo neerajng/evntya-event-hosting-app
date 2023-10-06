@@ -20,7 +20,6 @@ import Evntya from '../../components/Evntya/Evntya';
 
 export const AdminLayout = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-<<<<<<< HEAD
   const [shadow, setShadow] = useState(0)
   const [profile, setProfile] = useState(null)
   const isAdmin = true;
@@ -38,10 +37,7 @@ export const AdminLayout = () => {
           toast.error(error.response.data.message);
         });
   }, []);
-  
-=======
-  const isAdmin = true;
->>>>>>> origin/main
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -49,7 +45,6 @@ export const AdminLayout = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-<<<<<<< HEAD
 
   const handleClick = () => {
     navigate('/admin/profile');
@@ -70,8 +65,6 @@ export const AdminLayout = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-=======
->>>>>>> origin/main
   
   return (
     <>

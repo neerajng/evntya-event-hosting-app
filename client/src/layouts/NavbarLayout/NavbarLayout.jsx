@@ -21,7 +21,6 @@ import Evntya from '../../components/Evntya/Evntya';
 
 export const NavbarLayout = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-<<<<<<< HEAD
   const [shadow, setShadow] = useState(0)
   const [profile, setProfile] = useState(null)
   const isUser = true;
@@ -40,9 +39,7 @@ export const NavbarLayout = () => {
         });
   }, []);
 
-=======
-  const isUser = true;
->>>>>>> origin/main
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -104,23 +101,11 @@ export const NavbarLayout = () => {
             <Button
               component={Link}
               to="/bookings"
-<<<<<<< HEAD
-=======
               sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
             >
               My Bookings
             </Button>
-            {' '}
-            <Button
-              component={Link}
-              to="/profile"
-              endIcon={<AccountCircle fontSize="large"/>}
->>>>>>> origin/main
-              sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
-            >
-              My Bookings
-            </Button>
-            {' '}              
+            {' '}          
               {profile ? (
                 <Chip
                   avatar={<Avatar alt="profile" src={profile.picture} />}
@@ -171,8 +156,6 @@ export const NavbarLayout = () => {
               <Typography
                 component={Link}
                 to="/bookings"
-<<<<<<< HEAD
-=======
                 sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
               >
                 My Bookings
@@ -182,7 +165,6 @@ export const NavbarLayout = () => {
               <Typography
                 component={Link}
                 to="/profile"
->>>>>>> origin/main
                 sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
               >
                 My Bookings
