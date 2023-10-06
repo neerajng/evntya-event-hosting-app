@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import axiosInstance from '../../utils/axiosInterceptors/axiosConfig';
+import toast, { Toaster } from 'react-hot-toast';
 import {
   AppBar,
   Toolbar,
@@ -10,15 +12,33 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Chip,
+  Avatar,
 } from '@mui/material';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import AddIcon from '@mui/icons-material/Add';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import Evntya from '../../components/Evntya/Evntya';
 
 export const NavbarLayout = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [shadow, setShadow] = useState(0)
+  const [profile, setProfile] = useState(null)
   const isUser = true;
+  const navigate = useNavigate()
+
+  useEffect(() => {    
+    axiosInstance
+    .get('/api/profile')
+        .then((response) => {
+          setProfile(response.data);
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+          toast.error(error.response.data.message);
+        });
+  }, []);
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -26,10 +46,32 @@ export const NavbarLayout = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const handleClick = () => {
+    navigate('/profile');
+  };
+
+  
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      if (offset > 0) {
+        setShadow(4);
+      } else {
+        setShadow(0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+    
 
   return (
     <>
-    <AppBar position="static" component="nav" sx={{ pb: 2,bgcolor: 'brandYellow.main', color: 'black' }}>
+    <AppBar position="sticky" elevation={shadow} component="nav" sx={{ pb: 2,bgcolor: 'brandYellow.main', color: 'black' }}>
       <Toolbar>
         <Typography variant="h8" component="div" sx={{ flexGrow: 1 }}>
         <Evntya isUser={isUser} />
@@ -62,15 +104,22 @@ export const NavbarLayout = () => {
             >
               My Bookings
             </Button>
-            {' '}
-            <Button
-              component={Link}
-              to="/profile"
-              endIcon={<AccountCircle fontSize="large"/>}
-              sx={{ textTransform: 'none', color: 'black', fontSize: '1rem' }}
-            >
-              Profile
-            </Button>
+            {' '}              
+              {profile ? (
+                <Chip
+                  avatar={<Avatar alt="profile" src={profile.picture} />}
+                  label={profile.firstName}
+                  sx={{ textTransform: 'none', color: 'black', fontSize: '1rem', fontWeight: 'medium' }}
+                  onClick={handleClick}
+                />
+              ) : (
+                <Chip
+                  avatar={<Avatar />}
+                  label="Loading..."
+                  sx={{ textTransform: 'none', color: 'black', fontSize: '1rem', fontWeight: 'medium' }}
+                />
+              )}
+
           </Box>
         </Hidden>
 
@@ -112,13 +161,21 @@ export const NavbarLayout = () => {
               </Typography>
             </MenuItem>
             <MenuItem>
-              <Typography
-                component={Link}
-                to="/profile"
-                sx={{ textDecoration: 'none', color: 'black', fontSize: '1rem' }}
-              >
-                Profile
-              </Typography>
+                {profile ? (
+                  <Chip
+                    avatar={<Avatar alt="profile" src={profile.picture} />}
+                    label={profile.firstName}
+                    sx={{ textTransform: 'none', color: 'black', fontSize: '1rem', fontWeight: 'medium' }}
+                    onClick={handleClick}
+                  />
+                ) : (
+                  <Chip
+                    avatar={<Avatar />}
+                    label="Loading..."
+                    sx={{ textTransform: 'none', color: 'black', fontSize: '1rem', fontWeight: 'medium' }}
+                  />
+                )}
+
             </MenuItem>
           </Menu>
         </Hidden>

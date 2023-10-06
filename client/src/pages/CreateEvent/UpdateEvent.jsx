@@ -145,6 +145,7 @@ const handleImageChange = (e) => {
           </Typography>  
           <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateTimePicker
+            disablePast
             label="Publish Time"
             value={publishTime}
             onChange={setPublishTime}

@@ -5,8 +5,6 @@ import { SignOut } from '../../components/SignOut/SignOut';
 import toast, { Toaster } from 'react-hot-toast';
 import { UpdateProfile } from './UpdateProfile';
 
-
-
 export const Profile = () => {
   const [user, setUser] = useState({});
   const [eventCount, setEventCount] = useState(0);

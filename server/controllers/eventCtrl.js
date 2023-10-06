@@ -90,12 +90,14 @@ const singleEvent = async (req, res) => {
 const allEvents = async (req, res) => {
   console.log("allevents")
   try {
-    const events = await Event.find().sort({ _id: -1 });
+    const currentTime = new Date();
+    const events = await Event.find({ startTime: { $gte: currentTime } }).sort({ startTime: 1 });
     res.status(200).json(events);
   } catch (error) {
     res.status(500).send(error);
   }
-};  
+};
+
 
 const cancelEvent = async (req, res) => {
   try {

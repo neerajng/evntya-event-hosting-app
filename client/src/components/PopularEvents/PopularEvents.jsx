@@ -10,6 +10,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  CardActionArea,
   Grid,
   Typography,
   Stack,
@@ -166,7 +167,7 @@ export const PopularEvents = () => {
               '& .MuiInputBase-input': {
                 textAlign: 'center',
               },
-            }} value={dayjs(selectedDate)} onChange={handleDateChange} />
+            }} disablePast value={dayjs(selectedDate)} onChange={handleDateChange} />
           </LocalizationProvider>
             <TextField
               value={searchTerm}
@@ -183,6 +184,7 @@ export const PopularEvents = () => {
           sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
           onClick={() => handleCardClick(event)}
         >
+          <CardActionArea>
           <CardMedia
             component="img"
             sx={{ height: 140 }}
@@ -203,6 +205,7 @@ export const PopularEvents = () => {
                 : event.description}
             </Typography>
           </CardContent>
+          </CardActionArea>
         </Card>
       </Grid>
     ))

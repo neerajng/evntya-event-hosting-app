@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import {
   AppBar,
@@ -12,12 +12,12 @@ import {
   MenuItem,
 } from '@mui/material';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import AddIcon from '@mui/icons-material/Add';
 import Person3Icon from '@mui/icons-material/Person3';
 import Evntya from '../../components/Evntya/Evntya';
 
 export const NavbarLanding = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [shadow, setShadow] =useState(0);
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -26,9 +26,25 @@ export const NavbarLanding = () => {
     setAnchorEl(null);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      if (offset > 0) {
+        setShadow(4);
+      } else {
+        setShadow(0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <>
-    <AppBar position="static" component="nav" sx={{ pb: 2,bgcolor: 'brandYellow.main', color: 'black' }}>
+    <AppBar position="sticky" elevation={shadow} component="nav" sx={{ pb: 2,bgcolor: 'brandYellow.main', color: 'black' }}>
       <Toolbar>
         <Typography variant="h8" component="div" sx={{ flexGrow: 1 }}>
           <Evntya />

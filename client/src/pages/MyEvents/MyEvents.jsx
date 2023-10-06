@@ -8,6 +8,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  CardActionArea,
   Grid,
   Typography,
   Dialog,
@@ -31,6 +32,7 @@ export const MyEvents = () => {
     padding: '10px',
     fontSize: '14px',
   };
+  
 
   const navigate = useNavigate();
 
@@ -109,7 +111,8 @@ export const MyEvents = () => {
                 }}
                 
               >
-              {event.canceled && <DoDisturbIcon sx={{ color: 'red',position: 'absolute', width: "100%", height: "100%" }} />}
+              <CardActionArea>
+              {event.canceled && <DoDisturbIcon sx={{ color: 'red', position: 'absolute', width: "100%", height: "100%" }} />}
             
                 <CardMedia
                   component="img"
@@ -133,8 +136,9 @@ export const MyEvents = () => {
                       : event.description}
                   </Typography>
                 </CardContent>
+                </CardActionArea>
                 
-                <CardActions sx={{ justifyContent: 'space-between', px:4,pb:2}}>
+                <CardActions sx={{ justifyContent: 'space-between' , px:4,pb:2}} >
                 <Button
                   size="big"
                   variant="outlined"
@@ -154,6 +158,7 @@ export const MyEvents = () => {
                   Cancel
                 </Button>
               </CardActions>
+              
               </Card>
             </Grid>
           ))}

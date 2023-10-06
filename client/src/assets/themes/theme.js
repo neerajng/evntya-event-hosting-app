@@ -9,7 +9,22 @@ export const theme = createTheme({
   },
   typography: {
     brandFont: "'Jua', sans-serif",
-  }
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
+  
+    
   
 });
+
 

@@ -76,9 +76,9 @@ function App() {
             <Route element={<PrivateRoutes allowedRole="admin"/>}>
               <Route path='/admin' element={<AdminLayout/>}> 
                 <Route path='' element={<AdminDashboard />} /> 
-                <Route path='profile' element={<AdminProfile/>} /> 
                 <Route path='users' element={<AdminUsers/>} /> 
                 <Route path='events' element={<AdminProfile/>} /> 
+                <Route path='profile' element={<AdminProfile/>} /> 
               </Route>
             </Route>   
 

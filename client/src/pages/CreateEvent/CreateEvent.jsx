@@ -21,6 +21,7 @@ export const CreateEvent = ({ event }) => {
   const [country, setCountry] = useState(event ? event.address.country : '');
   const [meetLink, setMeetLink] = useState(event ? event.meetLink : '');
   const [description, setDescription] = useState(event ? event.description : '');
+  const today = new Date();
   const navigate = useNavigate()
   
   const handleLocationChange = (location) => {
@@ -143,12 +144,14 @@ export const CreateEvent = ({ event }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Stack direction="row" spacing={2} >
             <DateTimePicker
+              disablePast
               label="Start Time *"
               value={startTime}
               onChange={setStartTime}
               
             />
             <DateTimePicker
+              disablePast
               label="End Time *"
               value={endTime}
               onChange={setEndTime}
