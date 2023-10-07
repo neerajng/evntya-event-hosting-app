@@ -22,10 +22,11 @@ export const Bookings = () => {
 
   return (
     <Box mt={2} >
-      <Typography variant="h4" align="center">
+      <Typography variant="h4" align="center" sx={{ fontWeight: 500, fontFamily: 'cursive' }} >
         Booking History
       </Typography>
-      {bookings.map((booking) => (
+      {bookings.length > 0 ? (
+      bookings.map((booking) => (
       <Box  p={3}>
         <Box key={booking.bookingId}  sx={{ display: 'flex', justifyContent: 'center' }} mt={2} mb={2} mx={6}>
           <Card sx={{ flex: '2', minHeight: '300px' }}>
@@ -84,7 +85,17 @@ export const Bookings = () => {
 
         <Divider/>
         </Box>  
-        ))}
+        ))
+      ) : ( 
+        <Box  p={3}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }} mt={2} mb={2} mx={6}>
+            <Typography variant="h5">
+              Hey, no events booked yet.              
+            </Typography>
+          </Box>
+        </Box>
+        )  
+      }
     </Box>
   );
 };

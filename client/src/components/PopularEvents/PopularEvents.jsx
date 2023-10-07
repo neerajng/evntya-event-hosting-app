@@ -116,20 +116,21 @@ export const PopularEvents = () => {
       searchResults.some(searchResult => searchResult._id === event._id)
     );
   }
-  console.log( "search", searchResults)
+  console.log( "search", filteredEvents)
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredEvents.slice(indexOfFirstItem, indexOfLastItem);
-
-
+  
   return (
     <Box mt={2}>
       <Typography variant="h4" align="center">
         {searchResults.length > 0 ? (location === 'World Wide' ? 'Popular Events Worldwide' : `Popular Events in ${location}`) : 'Popular Events'}
       </Typography>
       <Box px={5} pb={5} >
-        <Stack direction="row" spacing={2} m={2} justifyContent="center" >
+        <Stack sx={{ display: 'flex', flexWrap: 'wrap' , justifyContent:'center'}} 
+        direction='row' spacing={2} m={2} 
+        useFlexGap>
           <Button
             sx={buttonStyle}
             variant="outlined"
@@ -155,6 +156,7 @@ export const PopularEvents = () => {
             sx={buttonStyle}
             variant="outlined"
             onClick={() => handleCategoryClick('thisWeek')}
+            size="small"
           >
             This Week
           </Button>
@@ -167,12 +169,14 @@ export const PopularEvents = () => {
               '& .MuiInputBase-input': {
                 textAlign: 'center',
               },
-            }} disablePast value={dayjs(selectedDate)} onChange={handleDateChange} />
+            }} disablePast value={dayjs(selectedDate)} onChange={handleDateChange} 
+            slotProps={{ textField: { size: 'small' } }}/>
           </LocalizationProvider>
             <TextField
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search events..."
+              size="small"
             />
         </Stack>
 

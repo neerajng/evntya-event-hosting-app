@@ -45,6 +45,7 @@ export const CreateEvent = ({ event }) => {
     e.preventDefault();
     
     let data = { name, startTime, endTime, category, description };
+
     if (category === 'Venue' || category === 'Hybrid') {
       data = { ...data, location, city, state, country };
     }
@@ -52,6 +53,16 @@ export const CreateEvent = ({ event }) => {
       data = { ...data, meetLink };
     }
     console.log(data)
+    
+    if (name.length > 37) {
+      toast.error('Event name cannot exceed 37 characters');
+      return;
+    }
+
+    if(description.length<100){
+      toast.error('Description should be in atleast 100 characters');
+      return;
+    }
     if (!name||!startTime||!endTime||!category||!description) {
       toast.error("Please fill in all the fields");
       return;

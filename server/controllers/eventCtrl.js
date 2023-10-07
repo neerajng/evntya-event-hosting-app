@@ -88,10 +88,15 @@ const singleEvent = async (req, res) => {
 };
 
 const allEvents = async (req, res) => {
-  console.log("allevents")
+  console.log("allevents");
   try {
     const currentTime = new Date();
-    const events = await Event.find({ startTime: { $gte: currentTime } }).sort({ startTime: 1 });
+    const events = await Event.find({
+      $and: [
+        { startTime: { $gte: currentTime } },
+        { publishTime: { $lte: currentTime } },
+      ],
+    }).sort({ startTime: 1 });
     res.status(200).json(events);
   } catch (error) {
     res.status(500).send(error);

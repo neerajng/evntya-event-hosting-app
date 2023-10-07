@@ -8,7 +8,6 @@ const ticketRoute = require('./routes/ticketRoutes');
 const cors = require('cors');
 const app = express();
 const PORT = 5000;
-const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const cron = require('node-cron');
 require('dotenv').config();
@@ -22,14 +21,6 @@ connectDB();
 // Parse JSON bodies
 app.use(express.json());
 
-app.use(
-  session({
-    secret: process.env.SECRET_KEY,
-    resave: true,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI, ttl: 24 * 60 * 60 }),
-  })
-);
 
 const cleanupTickets = require('./utils/cleanup');
 
