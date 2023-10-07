@@ -54,8 +54,8 @@ export const CreateEvent = ({ event }) => {
     }
     console.log(data)
     
-    if (name.length > 37) {
-      toast.error('Event name cannot exceed 37 characters');
+    if (name.length > 30) {
+      toast.error('Event name cannot exceed 30 characters');
       return;
     }
 
@@ -82,10 +82,15 @@ export const CreateEvent = ({ event }) => {
   const endDateTime = dayjs(endTime, 'MM/DD/YYYY hh:mm A').toDate();
   const currentTime = dayjs().format('MM/DD/YYYY hh:mm A');
 
+  // Calculate the duration in milliseconds
+  const durationInMilliseconds = endDateTime - startDateTime;
+  // Convert duration to hours
+  const durationInHours = durationInMilliseconds / (1000 * 60 * 60);
+
   if (startDateTime < new Date(currentTime)) {
     toast.error("Cannot select past time");
     return;
-  }
+  }  
 
   // Check if the start time and end time are the same
   if (startDateTime.getTime() === endDateTime.getTime()) {
@@ -96,6 +101,11 @@ export const CreateEvent = ({ event }) => {
   // Check if the start time is greater than the end time
   if (startDateTime.getTime() > endDateTime.getTime()) {
     toast.error("Start time cannot be greater than end time");
+    return;
+  }
+
+  if (durationInHours > 4) {
+    toast.error("Event duration cannot exceed 4 hours");
     return;
   }
 

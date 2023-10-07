@@ -33,10 +33,17 @@ const handleImageChange = (e) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    let imageUrl;
+    
+    const currentTime = dayjs().format('MM/DD/YYYY hh:mm A');
+
+    if (publishTime < new Date(currentTime)) {
+      toast.error("Please update the publish time to future.");
+      return;
+    } 
+
+    
     console.log(image,"loko")
-  
+    
     // Upload image
     if (image) {
       const formData = new FormData();
@@ -44,7 +51,7 @@ const handleImageChange = (e) => {
       axiosInstance
         .post('/api/upload-image', formData)
         .then((response) => {
-          imageUrl = response.data.imageUrl;
+          setImageUrl(response.data.imageUrl);
           // Submit event data with image URL and ticket information
           const data = event
           ? { eventId: event._id, image: imageUrl, tickets, publishTime: publishTime.toISOString() }
@@ -84,8 +91,27 @@ const handleImageChange = (e) => {
         })
         .catch((error) => {
           console.log(error)
+          toast.error(error.response.data.error);
         });
     }
+    else if(!image && event ){
+      const data = { eventId: event._id, image: imageUrl, tickets, publishTime: publishTime.toISOString() }
+      axiosInstance
+        .put(`/api/edit-event-two/${event._id}`, data)
+        .then((response) => {
+          toast.success(response.data.message);
+          setTimeout(() => {             
+            navigate('/my-events', { replace: true });
+          }, 2000);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.error);
+        });
+    }else if(!image){
+      toast.error("Please upload the event image")
+      return;
+    }
+    
   };
   
 

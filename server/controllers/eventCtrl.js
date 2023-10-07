@@ -171,6 +171,19 @@ const editEventTwo = async (req, res) => {
     const event = await Event.findById(eventId);
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
+    }   
+
+    const isValid = tickets.every(ticket => {
+      for (const key in ticket) {        
+        if (key !== "sold" && key !== "_id" && !ticket[key]) {
+          return false;
+        }
+      }
+      return true; 
+    });
+    
+    if (!isValid) {
+      return res.status(404).json({ error: 'Please fill the ticket details' });
     }
 
     // Update the event document with the new data
@@ -185,6 +198,7 @@ const editEventTwo = async (req, res) => {
     res.status(500).json({ error: 'Something went wrong' });
   }
 };  
+
 
 const searchEvents = async (req, res) => {  
   try {
