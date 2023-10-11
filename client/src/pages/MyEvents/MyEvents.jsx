@@ -122,6 +122,7 @@ export const MyEvents = () => {
       try {
         const response = await axiosInstance.get('/api/my-events');
         setEvents(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error(error);
         toast.error(error.response.data.message)
@@ -146,7 +147,7 @@ export const MyEvents = () => {
               <Tab label="Past Events" {...a11yProps(1)}/>
           </Tabs>
         </Box>
-        <Box display="inline-flex" gap={2} pr={3} backgroundColor="" 
+        <Box display="inline-flex" gap={2} pr={3} 
         sx={{ flexWrap: 'wrap' ,justifyContent: 'flex-end'}}>        
             <TextField label="Search" variant="outlined" size="small"/>
             <FormControl sx={{ minWidth: 120 }} size="small">
@@ -242,7 +243,7 @@ export const MyEvents = () => {
         </Container>
       </CustomTabPanel>
 
-      <CustomTabPanel value={value} index={1} backgroundColor="green">
+      <CustomTabPanel value={value} index={1} >
       <Container sx={{ py: 4 }} maxWidth="lg"  >
         <Grid container spacing={3}  >
         <Typography variant="h5">No past events yet.</Typography>

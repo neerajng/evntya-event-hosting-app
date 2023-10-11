@@ -42,6 +42,7 @@ export const DiscoverEvents = () => {
         if (data.length===0) {
           console.log(location,cat)
           toast.error('No events happening in this city');
+          dispatch(setSearchResults(data));
         } else {
           console.log(location,cat)
           dispatch(setSearchResults(data));

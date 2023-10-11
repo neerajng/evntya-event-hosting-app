@@ -18,20 +18,16 @@ const createEvent = async (req, res) => {
       return res.status(500).send({ error: error.message });
     }
 };
-  
-
 const uploadImage = async (req, res) => {
   try {
       
-      const imageUrl = req.file.path
-      console.log(imageUrl);
+      const imageUrl = req.file.path      
       res.json({ imageUrl: imageUrl });
   }
   catch (error){
     return res.status(500).send({ error: error.message });
   }
 };
-
 const updateEvent = async (req, res) => {
   try {
     const { eventId, image, tickets, publishTime } = req.body;
@@ -86,23 +82,6 @@ const singleEvent = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-const allEvents = async (req, res) => {
-  console.log("allevents");
-  try {
-    const currentTime = new Date();
-    const events = await Event.find({
-      $and: [
-        { startTime: { $gte: currentTime } },
-        { publishTime: { $lte: currentTime } },
-      ],
-    }).sort({ startTime: 1 });
-    res.status(200).json(events);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
-
 
 const cancelEvent = async (req, res) => {
   try {
@@ -162,7 +141,6 @@ const editEvent = async (req, res) => {
     res.status(500).json({ error: 'Something went wrong' });
   }
 };
-
 const editEventTwo = async (req, res) => {
   try {
     const { eventId, image, tickets, publishTime } = req.body;
@@ -199,41 +177,96 @@ const editEventTwo = async (req, res) => {
   }
 };  
 
+const allEvents = async (req, res) => {  
+  try {
+    const currentTime = new Date();
+    const events = await Event.find({
+      $and: [
+        { startTime: { $gte: currentTime } },
+        { publishTime: { $lte: currentTime } },
+      ],
+    }).sort({ startTime: 1 });
+    console.log("\n")
+    events.map(event=>console.log(event.name))
+    console.log("\nAllEVENTS\n");
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
-const searchEvents = async (req, res) => {  
+const searchEvents = async (req, res) => {
   try {
     const cityAliases = {
       "Trivandrum": "Thiruvananthapuram",
       "Bangalore": "Bengaluru",
     };
+
     let { location, category } = req.query;
     location = cityAliases[location] || location; // Normalize city name
-    console.log(location)
-    let categories = [];
-    console.log(location);
-    switch(category) {
-      case 'Online':
-        categories = ['Online'];
-        break;
-      case 'Hybrid':
-        categories = ['Hybrid'];
-        break;
-      case 'Offline':
-        categories = ['Venue'];
-        break;
-      case 'All Events':
-        categories = ['Online', 'Hybrid', 'Venue'];
-        break;
-      default:
-        return res.status(400).json('Invalid category');
+
+    const currentTime = new Date();
+    const timeCondition = {
+      $and: [
+        { startTime: { $gte: currentTime } },
+        { publishTime: { $lte: currentTime } },
+      ],
     }
-    console.log(categories)
-    
-    let matchStage = { category: { $in: categories } };
-    if (location !== "World Wide") {
-      matchStage['address.city'] = location;
+
+    let matchStage = {};
+
+    if (location === "World Wide") {
+      switch (category) {
+        case 'All Events':
+          matchStage = {
+            $or: [timeCondition, { category: 'Online' }],
+          };
+          break;
+        case 'Online':
+          matchStage = {
+            $and: [timeCondition, { category: 'Online' }],
+          };
+          break;
+        case 'Offline':
+          matchStage = {
+            $and: [timeCondition, { category: 'Venue' }],
+          };
+          break;
+        case 'Hybrid':
+          matchStage = {
+            $and: [timeCondition, { category: 'Hybrid' }],
+          };
+          break;
+        default:
+          return res.status(400).json('Invalid category');
+      }
+    } else {
+      switch (category) {
+        case 'All Events':
+          matchStage = {
+            $or: [timeCondition, { category: 'Online' }],
+            $or: [{ 'address.city': location }, { category: 'Online' }],
+          };
+          break;
+        case 'Online':
+          matchStage = {
+            $and: [timeCondition, { category: 'Online' }],
+          };
+          break;
+        case 'Offline':
+          matchStage = {
+            $and: [timeCondition, { category: 'Venue' }, { 'address.city': location }],
+          };
+          break;
+        case 'Hybrid':
+          matchStage = {
+            $and: [timeCondition, { category: 'Hybrid' }, { 'address.city': location }],
+          };
+          break;
+        default:
+          return res.status(400).json('Invalid category');
+      }
     }
-    
 
     const events = await Event.aggregate([
       {
@@ -247,13 +280,18 @@ const searchEvents = async (req, res) => {
       { $unwind: '$address' },
       { $match: matchStage }
     ]);
-    console.log(matchStage)
+    console.log("SEARCHRESULTS")
+    events.map(event=>console.log(event.name))
+    console.log("\n")
     res.status(200).json(events);
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json(err);
   }
 };
+
+
+
 
   module.exports = {
     createEvent,

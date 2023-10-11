@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Box, Typography, Stack } from '@mui/material';
 import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import toast, { Toaster } from 'react-hot-toast';
@@ -14,7 +14,7 @@ export const UpdateEvent = ({event}) => {
   const [tickets, setTickets] = useState(event ? event.tickets : []);
   const [publishTime, setPublishTime] = useState(event ? dayjs(event.publishTime) : null);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
 
 const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -40,23 +40,22 @@ const handleImageChange = (e) => {
       toast.error("Please update the publish time to future.");
       return;
     } 
-
     
     console.log(image,"loko")
     
     // Upload image
-    if (image) {
+    if (image) {      
       const formData = new FormData();
       formData.append('image', image);
       axiosInstance
         .post('/api/upload-image', formData)
-        .then((response) => {
-          setImageUrl(response.data.imageUrl);
+        .then((response) => {          
+          const imgUrlCloud = response.data.imageUrl;          
           // Submit event data with image URL and ticket information
           const data = event
-          ? { eventId: event._id, image: imageUrl, tickets, publishTime: publishTime.toISOString() }
-          : { eventId: JSON.parse(localStorage.getItem('eventId')), image: imageUrl, tickets, publishTime: publishTime.toISOString() };
-          console.log(imageUrl);  
+          ? { eventId: event._id, image: imgUrlCloud, tickets, publishTime: publishTime.toISOString() }
+          : { eventId: JSON.parse(localStorage.getItem('eventId')), image: imgUrlCloud, tickets, publishTime: publishTime.toISOString() };
+          console.log(imgUrlCloud);  
 
           if (event) {
             axiosInstance
@@ -95,6 +94,7 @@ const handleImageChange = (e) => {
         });
     }
     else if(!image && event ){
+      console.log("editing"+imageUrl+event.image)
       const data = { eventId: event._id, image: imageUrl, tickets, publishTime: publishTime.toISOString() }
       axiosInstance
         .put(`/api/edit-event-two/${event._id}`, data)

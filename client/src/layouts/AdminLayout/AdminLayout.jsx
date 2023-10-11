@@ -68,7 +68,7 @@ export const AdminLayout = () => {
   
   return (
     <>
-    <AppBar position="sticky" elevation={shadow} component="nav" sx={{ pb: 2,bgcolor: 'primary.main', color: 'black' }}>
+    <AppBar position="sticky" elevation={shadow} component="nav" sx={{ bgcolor: 'primary.main', color: 'black' }}>
       <Toolbar>
         <Typography variant="h8" component="div" sx={{ flexGrow: 1 }}>
         <Evntya isAdmin={isAdmin} />

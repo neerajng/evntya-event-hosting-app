@@ -107,16 +107,18 @@ export const PopularEvents = () => {
       return false;
     });
   }
-  console.log(searchResults)
-
+  console.log("search", searchResults)
+  
   if (searchResults.length>0){
-  filteredEvents = filteredEvents
-    .filter((event) => new Date(event.publishTime) <= new Date())
+    filteredEvents = filteredEvents    
     .filter(event => 
       searchResults.some(searchResult => searchResult._id === event._id)
-    );
+      );
+  }else {
+    filteredEvents = searchResults
   }
-  console.log( "search", filteredEvents)
+    console.log( "filtered", filteredEvents)
+  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
