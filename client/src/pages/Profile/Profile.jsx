@@ -3,7 +3,7 @@ import axiosInstance from '../../utils/axiosInterceptors/axiosConfig';
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { SignOut } from '../../components/SignOut/SignOut'; 
 import toast, { Toaster } from 'react-hot-toast';
-import { UpdateProfile } from './UpdateProfile';
+import { UpdateProfile } from './updateProfile';
 
 export const Profile = () => {
   const [user, setUser] = useState({});
