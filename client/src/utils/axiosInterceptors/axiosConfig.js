@@ -5,7 +5,7 @@ import { createBrowserHistory } from 'history';
 const history = createBrowserHistory();
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5000'
+  baseURL: 'https://evntya.shop/'
 });
 
 // Request interceptor
