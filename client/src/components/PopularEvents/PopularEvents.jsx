@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import jwt_decode from "jwt-decode";
-import Pagination from "react-js-pagination";
+// import Pagination from "react-js-pagination";
 import "./PopularEvents.css"
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCategory } from '../../redux/eventsSlice';
@@ -14,7 +14,7 @@ import {
   Grid,
   Typography,
   Stack,
-  TextField
+  TextField, Pagination
 } from '@mui/material';
 import toast, { Toaster } from 'react-hot-toast';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -32,9 +32,10 @@ export const PopularEvents = () => {
   const { allEvents, selectedCategory, searchResults, location } = useSelector((state) => state.events);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [numberOfPages, setNumberOfPages] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(6);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const maxDescriptionLength = 100;
 
@@ -46,11 +47,13 @@ export const PopularEvents = () => {
   const navigate = useNavigate();
   
 
-  console.log(allEvents);
+  // console.log(allEvents);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+    // console.log(value)
   };
+
   
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -58,13 +61,12 @@ export const PopularEvents = () => {
 
   const handleCardClick = (event) => {
     const slug = slugify(event.name.toString(), { lower: true, strict: true });
-    console.log(slug);
+    // console.log(slug);
     userId ? navigate(`/event/${slug}`, { state: { id: event._id } }) : toast.error('Please do login first');
 };
 
   const handleCategoryClick = (category) => {
     dispatch(setSelectedCategory(category));
-    // Add your logic here to filter events by the selected category
   };
 
   const handleDateChange = (newDate) => {
@@ -107,7 +109,7 @@ export const PopularEvents = () => {
       return false;
     });
   }
-  console.log("search", searchResults)
+  // console.log("search", searchResults)
   
   if (searchResults.length>0){
     filteredEvents = filteredEvents    
@@ -117,12 +119,16 @@ export const PopularEvents = () => {
   }else {
     filteredEvents = searchResults
   }
-    console.log( "filtered", filteredEvents)
+  // console.log( "filtered", filteredEvents)
+  const pageCount = (filteredEvents.length+1)/6  
   
+  useEffect(() => {
+    setNumberOfPages(pageCount)     
+  }, [numberOfPages, pageCount]);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredEvents.slice(indexOfFirstItem, indexOfLastItem);
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentItems = filteredEvents.slice(indexOfFirstItem, indexOfLastItem);
   
   return (
     <Box mt={2}>
@@ -183,8 +189,8 @@ export const PopularEvents = () => {
         </Stack>
 
         <Grid container spacing={8}>
-  {currentItems.length > 0 ? (
-    currentItems.map((event) => (
+  {filteredEvents.length > 0 ? (
+    filteredEvents.map((event) => (
       <Grid item key={event._id} xs={12} sm={6} md={4} >
         <Card
           sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -225,16 +231,21 @@ export const PopularEvents = () => {
 </Grid>
 
       </Box>
-      <Toaster toastOptions={{ sx: { padding: '10px', fontSize: '14px' } }} position="top-right" />
-      <Box>
-      <Pagination
-        activePage={currentPage}
-        itemsCountPerPage={itemsPerPage}
-        totalItemsCount={filteredEvents.length}
-        pageRangeDisplayed={6}
-        onChange={handlePageChange}
-      />
+      <Box sx={{display:'flex', justifyContent:'center'}}>  
+      <Pagination count={10} color="secondary" size='large' 
+      showFirstButton showLastButton
+      page={currentPage}
+      onChange={handlePageChange}/>    
       </Box>
+      <Toaster toastOptions={{ sx: { padding: '10px', fontSize: '14px' } }} position="top-right" />
     </Box>
   );
 };
+
+/* <Pagination
+  activePage={currentPage}
+  itemsCountPerPage={itemsPerPage}
+  totalItemsCount={filteredEvents.length}
+  pageRangeDisplayed={6}
+  onChange={handlePageChange}
+/> */

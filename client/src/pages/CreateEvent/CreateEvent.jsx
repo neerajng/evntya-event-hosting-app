@@ -52,7 +52,7 @@ export const CreateEvent = ({ event }) => {
     if (category === 'Online' || category === 'Hybrid') {
       data = { ...data, meetLink };
     }
-    console.log(data)
+    // console.log(data)
     
     if (name.length > 30) {
       toast.error('Event name cannot exceed 30 characters');
@@ -135,11 +135,11 @@ export const CreateEvent = ({ event }) => {
     .catch((error)=> {
       // Handle the error response
       if (error.response) {
-        console.log(error)
+        // console.log(error)
         toast.error(error.response.data.error);
       } else {
         toast.error('Something went wrong');
-        console.log(error)
+        // console.log(error)
       }
     });
     };

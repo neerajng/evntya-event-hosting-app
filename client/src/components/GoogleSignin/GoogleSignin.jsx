@@ -40,9 +40,12 @@ export const GoogleSignin = () => {
             .then((response) => {              
               const data = response.data;          
               dispatch(setSearchResults(data))
-              console.log(data)
+              // console.log(data)
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+              toast.error(error.message);
+              // console.log(error)
+            })
         }                
         
          // Fetch location using geolocation API
@@ -51,14 +54,14 @@ export const GoogleSignin = () => {
           async (position) => {
             let { latitude, longitude } = position.coords;
     
-            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+            // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
       
             const response = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
             );
             const data = await response.json();
             const { city } = data;
-            console.log(city)  
+            // console.log(city)  
             // Fetch events based on the city
             axiosInstance
               .get('/api/search-events', {
@@ -78,12 +81,12 @@ export const GoogleSignin = () => {
                 }
               })
               .catch((error) => {
-                console.log(error);
+                // console.log(error);
                 toast.error(error.message);
               });
           },
           (error) => {
-            console.log(error);
+            // console.log(error);
             // If geolocation is denied or fails, fetch all events
             fetchEvents();
           }
@@ -104,7 +107,8 @@ export const GoogleSignin = () => {
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={() => {
-          console.log('Login Failed');
+          toast.error('Login Failed');
+          // console.log('Login Failed');
         }}
         shape="circle"
       />

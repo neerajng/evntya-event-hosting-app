@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import {Button, Box, Alert, Card, CardMedia, Typography, List, ListItem, ListItemText, Divider, CardContent } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -19,10 +20,10 @@ export const BookingConfirmation = () => {
     axiosInstance.patch('/api/confirmation', { bookingId:bookingId })
       .then(response => {
         setBookingData(response.data);
-        console.log(response.data)
+        // console.log(response.data)
       })
-      .catch(error => {
-        console.error('There was an error!', error);
+      .catch(error => {        
+        toast.error('There was an error!', error);
       });
   }, [bookingId,navigate]);
 
@@ -91,6 +92,7 @@ export const BookingConfirmation = () => {
     <Box sx={{ display:'flex', justifyContent: 'flex-end' ,}} mr={6}>
       <Button onClick={() => toPDF()}>Download the ticket</Button>
     </Box>
+    <Toaster toastOptions={{ sx: { padding: '10px', fontSize: '14px' } }} position="top-right" />
     </Box>
   );
 };

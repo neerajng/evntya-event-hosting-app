@@ -141,7 +141,7 @@ const verifyOtpCtrl = async (req, res) => {
 
   } catch (error) {
     // Handle any other errors
-    console.error(error);
+    // console.error(error);
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
@@ -187,7 +187,7 @@ const signinCtrl = async (req, res) => {
     // Return the token to the client
     res.json({ token });
   } catch (error) {
-    console.error('Sign-in error:', error);
+    // console.error('Sign-in error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -319,7 +319,7 @@ const googleSigninCtrl = async (req, res) => {
     // Return the token to the client
     res.json({ token, email });
   } catch (error) {
-    console.error('Google sign-in error:', error);
+    // console.error('Google sign-in error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -339,7 +339,7 @@ const verifyGoogle = async (client_id, jwtToken) => {
     // all the user info
     return payload;
   } catch(error){
-    console.error(error);
+    // console.error(error);
     return res.status(500).json({ success: false, error: error.message });
   }  
 };

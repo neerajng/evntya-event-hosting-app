@@ -51,14 +51,13 @@ const updateEvent = async (req, res) => {
 
     res.status(200).json({ message: 'Event created successfully', event });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Something went wrong' });
   }
 };
   
 
 const myEvents = async (req, res) => {
-  console.log("myEvents")
   try {
     const userId = await req.user.userId ;
     const events = await Event.find({ organizer: userId });
@@ -70,7 +69,7 @@ const myEvents = async (req, res) => {
 
 const singleEvent = async (req, res) => {
   try {
-    console.log(req.params)
+    // console.log(req.params)
     const event = await Event.findById(req.params.eventId).populate('address').populate('organizer');
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
@@ -78,7 +77,7 @@ const singleEvent = async (req, res) => {
     
     res.json(event);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -91,10 +90,10 @@ const cancelEvent = async (req, res) => {
     const event =await Event.findOne({ _id: eventId });
     event.canceled = true
     await event.save();
-    console.log(event);  
+    // console.log(event);  
     return res.json({ message: 'Event canceled successfully' });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Something went wrong' });
   }
 }
@@ -137,7 +136,7 @@ const editEvent = async (req, res) => {
 
     res.status(200).json({ message: 'Event edited successfully', event });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Something went wrong' });
   }
 };
@@ -172,7 +171,7 @@ const editEventTwo = async (req, res) => {
 
     res.status(200).json({ message: 'Event updated successfully', event });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Something went wrong' });
   }
 };  
@@ -186,9 +185,9 @@ const allEvents = async (req, res) => {
         { publishTime: { $lte: currentTime } },
       ],
     }).sort({ startTime: 1 });
-    console.log("\n")
-    events.map(event=>console.log(event.name))
-    console.log("\nAllEVENTS\n");
+    // console.log("\n")
+    // events.map(event=>console.log(event.name))
+    // console.log("\nAllEVENTS\n");
     res.status(200).json(events);
   } catch (error) {
     res.status(500).send(error);
@@ -280,12 +279,12 @@ const searchEvents = async (req, res) => {
       { $unwind: '$address' },
       { $match: matchStage }
     ]);
-    console.log("SEARCHRESULTS")
-    events.map(event=>console.log(event.name))
-    console.log("\n")
+    // console.log("SEARCHRESULTS")
+    // events.map(event=>console.log(event.name))
+    // console.log("\n")
     res.status(200).json(events);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json(err);
   }
 };

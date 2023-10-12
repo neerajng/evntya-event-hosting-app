@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
+import toast, { Toaster } from 'react-hot-toast';
 import { Avatar, Grid, Table, TableBody, TableCell, TableHead, 
   TableContainer,TableRow, Typography, Button, Paper, Card } from '@mui/material';
+
+  const toastStyle = {
+    padding: '10px',
+    fontSize: '14px',
+  };
 
 export const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -11,7 +17,10 @@ export const AdminUsers = () => {
     axiosInstance
       .get('/api/users')
       .then((response) => setUsers(response.data))
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        toast.error(error.message)
+        // console.log(error)
+      });
   }, []);
 
   const handleBlockClick = (user) => {
@@ -25,7 +34,10 @@ export const AdminUsers = () => {
           users.map((u) => (u._id === user._id ? { ...u, isBlocked: !u.isBlocked } : u))
         );
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        toast.error(error.message)
+        // console.log(error)
+      });
   };
 
   return (
@@ -78,7 +90,12 @@ export const AdminUsers = () => {
         </TableContainer>
         </Card>
       </Grid>
-
+      <Toaster
+        toastOptions={{
+          style: toastStyle,
+        }}
+        position="top-right"
+      />         
     </Grid>
   );
 };

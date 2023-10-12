@@ -71,7 +71,7 @@ export const SignupForm = () => {
     setPassword('')
     setConfirmPassword('');
 
-    console.log(response.data);
+    // console.log(response.data);
     // Store the response data in Redux
     dispatch(SignupResponse(response.data));
 
@@ -81,11 +81,11 @@ export const SignupForm = () => {
   .catch((error)=> {
     // Handle the error response
     if (error.response) {
-      console.log(error)
+      // console.log(error)
       toast.error(error.response.data.error);
     } else {
       toast.error('Something went wrong');
-      console.log(error)
+      // console.log(error)
     }
   });
   };

@@ -19,7 +19,7 @@ instance.interceptors.request.use(config => {
   },
 
   error => {  
-    console.log("error")    
+    // console.log("error")    
     return Promise.reject(error);
   }
 
@@ -44,7 +44,7 @@ instance.interceptors.response.use(response => {
       store.dispatch(clearAuth());      
       history.push('/signin');
     }
-    console.log(error)
+    // console.log(error)
     return Promise.reject(error);
   }
 

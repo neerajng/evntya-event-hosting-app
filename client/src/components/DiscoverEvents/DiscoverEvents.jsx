@@ -14,7 +14,7 @@ export const DiscoverEvents = () => {
   const dispatch = useDispatch();
 
   const handleLocationChange = (event, newValue) => {
-    console.log(newValue)
+    // console.log(newValue)
     dispatch(setLocation(newValue));
     localStorage.setItem('location', newValue);
   };
@@ -38,18 +38,18 @@ export const DiscoverEvents = () => {
       })
       .then((response) => {
         const data = response.data;
-        console.log(data)
+        // console.log(data)
         if (data.length===0) {
-          console.log(location,cat)
+          // console.log(location,cat)
           toast.error('No events happening in this city');
           dispatch(setSearchResults(data));
         } else {
-          console.log(location,cat)
+          // console.log(location,cat)
           dispatch(setSearchResults(data));
         }
       })
       .catch((error) => {
-        console.log(error)
+        // console.log(error)
         toast.error(error.message);
       });
   };

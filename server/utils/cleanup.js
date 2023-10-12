@@ -12,12 +12,12 @@ const cleanupTickets = async () => {
     });
 
     if (result.deletedCount > 0) {
-      console.log(`Cleanup removed ${result.deletedCount} pending tickets.`);
+      // console.log(`Cleanup removed ${result.deletedCount} pending tickets.`);
     } else {
-      console.log('No pending tickets to cleanup.');
+      // console.log('No pending tickets to cleanup.');
     }
   } catch (error) {
-    console.log('Cleanup failed:', error);
+    // console.log('Cleanup failed:', error);
   }
 };
 

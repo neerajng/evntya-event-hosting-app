@@ -9,7 +9,7 @@ const jwtVerify = (req, res, next) => {
         return res.status(401).json({ message: 'Please do login.' });
     }
     try {
-      console.log("jwtverfied");
+      // console.log("jwtverfied");
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
       req.user = decoded;
     next();

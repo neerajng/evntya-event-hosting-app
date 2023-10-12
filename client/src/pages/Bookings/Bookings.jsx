@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Box, Card, CardContent, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import toast, { Toaster } from 'react-hot-toast';
+import { Box, Card, CardContent, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
 import QRCode from 'qrcode.react'; 
 // import { usePDF } from 'react-to-pdf';
@@ -13,10 +14,10 @@ export const Bookings = () => {
     axiosInstance.get('/api/bookings') // Use your actual API endpoint here
       .then((response) => {
         setBookings(response.data);
-        console.log(response.data)
+        // console.log(response.data)
       })
       .catch((error) => {
-        console.error('Error fetching bookings', error);
+        toast.error('Error fetching bookings');
       });
   }, []);
 
@@ -96,6 +97,7 @@ export const Bookings = () => {
         </Box>
         )  
       }
+      <Toaster toastOptions={{ sx: { padding: '10px', fontSize: '14px' } }} position="top-right" />
     </Box>
   );
 };

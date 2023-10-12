@@ -48,7 +48,7 @@ export const Checkout = () => {
   const navigate = useNavigate();
   const bookingData = location.state?.data; 
   const bookingId = bookingData.tickets[0].bookingId
-  console.log(bookingId)
+  // console.log(bookingId)
 
   useEffect(() => {
     (!bookingData) ? navigate(-1) :
@@ -60,7 +60,7 @@ export const Checkout = () => {
         setClientSecret(response.data.clientSecret);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         toast.error(error.message);
       });
   }, [bookingData]);  
@@ -136,7 +136,7 @@ export const Checkout = () => {
     const result = await stripe.confirmCardPayment(clientSecret,{
       payment_method:{card:elements.getElement(CardElement)}
     });
-    console.log(result);
+    // console.log(result);
 
     if(result.paymentIntent){
         navigate('/confirmation', { state: { bookingId }, replace: true });

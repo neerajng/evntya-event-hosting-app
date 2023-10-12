@@ -81,13 +81,13 @@ export const MyEvents = () => {
 
   const handleCardClick = (event) => {
     const slug = slugify(event.name.toString(), { lower: true, strict: true });
-    console.log(slug)
+    // console.log(slug)
     navigate(`/event/${slug}`, { state: { id: event._id } });
   };
   const handleEditClick = (event) => {
     // Handle the edit event
     navigate(`/edit-event/${event._id}`);
-    console.log(`Edit event: ${event._id}`);
+    // console.log(`Edit event: ${event._id}`);
   };
   const handleCancelClick = (event) => {
     setSelectedEvent(event); 
@@ -102,7 +102,7 @@ export const MyEvents = () => {
         .post(`/api/cancel-event/${selectedEvent._id}`)
         .then((response) => {
           // Handle the successful response
-          console.log(response.data);
+          // console.log(response.data);
           toast.loading('Event is being cancelled');
   
           setTimeout(() => {
@@ -111,7 +111,7 @@ export const MyEvents = () => {
           }, 4000);
         })
         .catch((error) => {
-          console.error(error);
+          toast.error(error.message);
         });
       setOpen(false);
     }
@@ -122,9 +122,8 @@ export const MyEvents = () => {
       try {
         const response = await axiosInstance.get('/api/my-events');
         setEvents(response.data);
-        console.log(response.data)
+        // console.log(response.data)
       } catch (error) {
-        console.error(error);
         toast.error(error.response.data.message)
       }
     };

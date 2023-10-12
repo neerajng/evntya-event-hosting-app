@@ -3,7 +3,7 @@ const User = require('../models/User');
 const checkBlocked = async (req, res, next) => {
     try {   
       
-      console.log("checkblocked") 
+      // console.log("checkblocked") 
       const userId = req.user.userId;
       // Check if the user exists
       const user = await User.findById(userId);
@@ -21,7 +21,7 @@ const checkBlocked = async (req, res, next) => {
       // Continue processing the request
       next();
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };

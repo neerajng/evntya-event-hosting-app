@@ -20,9 +20,12 @@ export const HomePage = () => {
           dispatch(setAllEvents(data));
           // dispatch(setSearchResults(data));
           setIsLoading(false);
-          console.log("data")
+          // console.log("data")
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          toast.error(error.message)
+          // console.log(error)
+        });
     }
   
     fetchEvents();

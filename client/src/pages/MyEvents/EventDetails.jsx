@@ -27,7 +27,7 @@ export const EventDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const eventId = location.state?.id
-  console.log(eventId)
+  // console.log(eventId)
   const token = localStorage.getItem("token") ? localStorage.getItem("token") : null;
   const decodedToken = (token) ? jwt_decode(token) : null ;
   const userId = decodedToken?.userId;
@@ -41,7 +41,7 @@ export const EventDetails = () => {
         setEvent(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         toast.error(error.response.data.message)
       });
   }, [navigate, token,eventId]); 
@@ -110,7 +110,7 @@ export const EventDetails = () => {
       ticketQuantities,
       userId
     }
-    console.log(data)
+    // console.log(data)
     // Send request to server to book ticket
     axiosInstance
       .post('/api/proceed-checkout', {
@@ -119,9 +119,9 @@ export const EventDetails = () => {
       .then((response) => {
         const data = response.data; 
         if (data.errors && data.errors.length > 0) {
-          console.log('Some tickets could not be reserved:', data.errors);
+          // console.log('Some tickets could not be reserved:', data.errors);
         } else {
-          console.log(data);
+          // console.log(data);
           setProceedToCheckout(true);
           navigate('/checkout', { state: { data: {
             ...data,
@@ -131,7 +131,7 @@ export const EventDetails = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         toast.error(error.response.data.error)
       });
 

@@ -12,13 +12,13 @@ const buttonStyle = {
 
 export const LocationButton = (props) => {
     const handleClick = () => {
-        console.log('Button clicked');
+        // console.log('Button clicked');
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             async (position) => {
               let { latitude, longitude } = position.coords;
     
-              console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+              // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
       
               // Use the BigDataCloud Reverse Geocoding API to get the address information
               const response = await fetch(
@@ -26,25 +26,23 @@ export const LocationButton = (props) => {
               );
               const data = await response.json();
               const { locality, city, principalSubdivision, countryName } = data;
-              console.log(data)
-              console.log(`Location: ${locality}`);
-              console.log(`City: ${city}`);
-              console.log(`State: ${principalSubdivision}`);
-              console.log(`Country: ${countryName}`);
+              // console.log(data)
+              // console.log(`Location: ${locality}`);
+              // console.log(`City: ${city}`);
+              // console.log(`State: ${principalSubdivision}`);
+              // console.log(`Country: ${countryName}`);
               props.onLocationChange(locality);
               props.onCityChange(city);
               props.onStateChange(principalSubdivision);
               props.onCountryChange(countryName);
 
-              console.log(props)
+              // console.log(props)
             },
-            (error) => {
-              console.error(error);
+            (error) => {              
               toast.error(error.message+".Please enable location and re-try");
             }
             );
         } else {
-            console.error('Geolocation is not supported by this browser');
             toast.error('Geolocation is not supported by this browser');
         }
       };

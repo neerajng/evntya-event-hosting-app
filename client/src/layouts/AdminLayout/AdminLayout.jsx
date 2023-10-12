@@ -30,10 +30,10 @@ export const AdminLayout = () => {
     .get('/api/profile')
         .then((response) => {
           setProfile(response.data);
-          console.log(response.data)
+          // console.log(response.data)
         })
         .catch((error) => {
-          console.log(error)
+          // console.log(error)
           toast.error(error.response.data.message);
         });
   }, []);

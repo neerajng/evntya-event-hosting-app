@@ -41,7 +41,7 @@ const handleImageChange = (e) => {
       return;
     } 
     
-    console.log(image,"loko")
+    // console.log(image,"loko")
     
     // Upload image
     if (image) {      
@@ -55,7 +55,7 @@ const handleImageChange = (e) => {
           const data = event
           ? { eventId: event._id, image: imgUrlCloud, tickets, publishTime: publishTime.toISOString() }
           : { eventId: JSON.parse(localStorage.getItem('eventId')), image: imgUrlCloud, tickets, publishTime: publishTime.toISOString() };
-          console.log(imgUrlCloud);  
+          // console.log(imgUrlCloud);  
 
           if (event) {
             axiosInstance
@@ -78,8 +78,8 @@ const handleImageChange = (e) => {
                 localStorage.removeItem('eventId');
                 // Code to execute after delay
                 navigate('/', {replace:true})
-                console.log(publishTime.toISOString())
-                console.log(response)
+                // console.log(publishTime.toISOString())
+                // console.log(response)
               }, 2000);
             })
             .catch((error)=> {
@@ -89,12 +89,12 @@ const handleImageChange = (e) => {
           }  
         })
         .catch((error) => {
-          console.log(error)
+          // console.log(error)
           toast.error(error.response.data.error);
         });
     }
     else if(!image && event ){
-      console.log("editing"+imageUrl+event.image)
+      // console.log("editing"+imageUrl+event.image)
       const data = { eventId: event._id, image: imageUrl, tickets, publishTime: publishTime.toISOString() }
       axiosInstance
         .put(`/api/edit-event-two/${event._id}`, data)

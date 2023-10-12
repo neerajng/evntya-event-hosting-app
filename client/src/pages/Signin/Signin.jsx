@@ -31,8 +31,8 @@ export const SigninForm = () => {
     
     setLoading(true);
     // Process the sign-in logic
-    console.log('Email:', email);
-    console.log('Password:', password);
+    // console.log('Email:', email);
+    // console.log('Password:', password);
     const data = {
       email,
       password
@@ -63,9 +63,12 @@ export const SigninForm = () => {
             .then((response) => {
               const data = response.data;          
               dispatch(setSearchResults(data))
-              console.log(data)
+              // console.log(data)
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+              toast.error(error.message)
+              // console.log(error)
+            });
         }                
         
          // Fetch location using geolocation API
@@ -74,7 +77,7 @@ export const SigninForm = () => {
           async (position) => {
             let { latitude, longitude } = position.coords;
     
-            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+            // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
       
             const response = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
@@ -100,12 +103,12 @@ export const SigninForm = () => {
                 }
               })
               .catch((error) => {
-                console.log(error);
+                // console.log(error);
                 toast.error(error.message);
               });
           },
           (error) => {
-            console.log(error);
+            // console.log(error);
             // If geolocation is denied or fails, fetch all events
             fetchEvents();
           }

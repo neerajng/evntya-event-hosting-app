@@ -5,7 +5,7 @@ const Event = require('../models/Event');
 const profile = async (req, res) => {
 
     try {
-      console.log(req.user)    
+      // console.log(req.user)    
       const userId = await req.user.userId ;
       const user = await User.findById(userId);
       const eventCount = await Event.countDocuments({ organizer: userId });

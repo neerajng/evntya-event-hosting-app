@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../utils/axiosInterceptors/axiosConfig'
+import toast, { Toaster } from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import { CreateEvent } from '../../pages/CreateEvent/CreateEvent';
 
@@ -11,10 +12,10 @@ export const EditEvent = () => {
     const fetchEvent = async () => {
       try {
         const response = await axiosInstance.get(`/api/event/${id}`);
-        console.log(response.data);
+        // console.log(response.data);
         setEvent(response.data);
       } catch (error) {
-        console.error(error);
+        toast.error(error.message);
       }
     };
     fetchEvent();

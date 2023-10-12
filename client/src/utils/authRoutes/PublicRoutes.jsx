@@ -6,10 +6,10 @@ export const PublicRoutes = () => {
 
     const authState = useSelector((state)=>{ return  state.auths.authState })
     
-    console.log("Public",authState)
+    // console.log("Public",authState)
 
   if (!authState || !authState.token) {
-    console.log("pnull")  
+    // console.log("pnull")  
     return <Outlet />;
   } else if (authState.role === 'admin') {
     return <Navigate to="/admin" />;

@@ -19,10 +19,11 @@ export const AdminProfile = () => {
         .then((response) => {
           setUser(response.data);
           setEventCount(response.data.eventCount);
-          console.log(response.data)
+          // console.log(response.data)
         })
         .catch((error) => {
-          console.log(error);
+          toast.error(error.message)
+          // console.log(error);
         });
   }, []);
 
